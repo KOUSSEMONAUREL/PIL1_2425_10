@@ -1,0 +1,123 @@
+body {
+    height: 100vh;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    overflow: hidden;
+    background-color: whitesmoke;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+a {
+    text-decoration: none;
+    color: initial;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 20px;
+    height:10vh;
+    margin-top: 20px;
+}
+
+header div {
+    display: flex;
+    gap: 4vw;
+    font-size: clamp(.6rem, 2vw, 18px);
+}
+
+header img {
+    width: clamp(100px, 50vw, 500px);
+    height: clamp(100px, 20vh, 200px);
+    filter: drop-shadow(2px 2px 4px black);
+}
+
+.section {
+    position: relative;
+    height:70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    overflow: hidden;
+    border-radius: 20px;    
+    font-family: 'Poppins', sans-serif;
+}
+
+.background-blur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: url(../Asset/ressources/Images/back2.png) center/cover no-repeat;
+    filter: brightness(85%) blur(.4px);
+    z-index: 1;
+}
+
+.section section {
+    position: absolute;
+    z-index: 2;
+}
+
+.section section div:first-child {
+    position: absolute;
+    animation: car 5s linear infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 20%;
+}
+
+.section section div:first-child p {
+    width: 80px;
+    height: 20px;
+    text-align: center;
+    top: 43%;
+    left: 30%;
+    position: absolute;
+    border-radius: 5px;
+    padding: 2px;
+    overflow: hidden;
+}
+
+.section section div:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 30vh;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+section img {
+    width: 250px;
+    height: 200px;
+}
+
+@keyframes car {
+    from {
+        transform: translateX(-100vw);
+        filter: drop-shadow(0 0 4px rgb(20, 19, 19));
+    }
+
+    to {
+        transform: translateX(100vw);
+        filter: drop-shadow(-20px 20px 10px rgb(0, 0, 0));
+    }
+}
+
+footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height:10vh;
+    /* margin-bottom: 5vh; */
+}
+
+footer h3 {
+    font-size: clamp(.8rem, 2vw, 20px);
+}

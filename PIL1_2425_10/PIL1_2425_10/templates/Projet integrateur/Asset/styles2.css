@@ -1,0 +1,251 @@
+body {
+    /* overflow: hidden; */
+    background-color: white;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column;
+}
+
+/* Accueil */
+
+.sec1 {
+    margin-top: 10vh;
+    text-align: center;
+}
+
+.Accueil h1 {
+    color: rgba(0, 0, 255, 0.921);
+    font-size: 8vw;
+}
+
+.Accueil h2{
+    font-size: 5vw;
+}
+
+.Accueil img {
+    width: 200px;
+    height: 100px;
+}
+
+.sec2 {
+    display: flex;
+    gap: 10px;
+}
+
+.sec2 i {
+    color: blue;
+}
+
+.Accueil div {
+    border: 2px solid gainsboro;
+    text-align: center;
+    margin-top: 0;
+    min-width: 100px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.Accueil > div {
+    margin-top: 10px;
+}
+
+#cont {
+    flex-direction: row;
+    min-width: 230px;
+    gap: 20px;
+}
+
+#cont i{
+    color: blue;
+}
+
+/* Rechercher */
+
+.Rechercher {
+    height: 90vh;
+    width: 100vw;
+}
+
+.sec11 {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.sec21 {
+    width: 100vw;
+    height: 40vh;
+    background-color: aqua;
+}
+
+.Rechercher div {
+    display: flex;
+    flex-direction: column;
+}
+
+.sec31 {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.sec31 div {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: row;
+    border: 2px solid grey;
+    width: 90vw;
+    height: 4vh;
+    border-radius: 5px;
+}
+
+.sec31 input {
+    width: 75vw;
+    height: 4vh;
+    border: none;
+    outline: none;
+}
+
+.sec41 {
+    height: 25vh;
+    margin-top: 5px;
+    background-color: blue;
+}
+
+/* Publier */
+
+.Publier {
+    height: 90vh;
+    width: 100vw;
+}
+
+.Publier div {
+    display: flex;
+    flex-direction: column;
+}
+
+.Publier button {
+    background-color: #096de7;
+    border: none;
+    color: white;
+    width: 75vw;
+    height: 4vh;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#Pub1 {
+    gap: 5px;
+    margin-top: 20px;
+}
+
+.Publier > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sec31 div {
+    width: 90vw;
+    height: 6vh;
+}
+
+.sec31 input {
+    width: 80vw;
+    height: 6vh;
+}
+
+input {
+    font-size: 15px;
+}
+
+/* Messagerie */
+
+/* Profil */
+
+.Profil {
+    height: 90vh;
+    width: 100vw;
+}
+
+.Profil div {
+    display: flex;
+    flex-direction: column;
+}
+
+.sec51 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sec51 img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: darkslategray;
+}
+
+.sec51 h2 {
+    font-size: 20px;
+}
+
+.sec51 span {
+    font-size: 16px;
+    color: #0467e0;
+}
+
+#Profil1 div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border: none;
+}
+
+#Profil1 div div {
+    width: 31vw;
+    height: 6vh;
+}
+
+#Profil1 input {
+    width: 30vw;
+    height: 6vh;
+    border: 1px solid black;
+}
+
+/* Pied de page */
+
+footer {
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+    border-top: 2px solid gainsboro;
+    width: 90%;
+    gap: 15px;
+    padding-top: 10px;
+}
+
+footer a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    text-decoration: none;
+    color: initial;
+    font-size: 3.9vw;
+}
