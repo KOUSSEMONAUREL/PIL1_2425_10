@@ -47,17 +47,6 @@ header img {
     font-family: 'Poppins', sans-serif;
 }
 
-.background-blur {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background: url(../Asset/ressources/Images/back2.png) center/cover no-repeat;
-    filter: brightness(85%) blur(.4px);
-    z-index: 1;
-}
-
 .section section {
     position: absolute;
     z-index: 2;

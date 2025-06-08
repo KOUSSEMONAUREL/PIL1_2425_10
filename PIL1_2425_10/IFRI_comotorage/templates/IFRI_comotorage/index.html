@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,12 +7,27 @@
     <title>Page d'accueil</title>
     <link rel="shortcut icon" href="Asset/ressources/Images/logo_IFRI_comotorage.png" type="image/x-icon">
    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins&family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="Asset/styles.css">
+    <link rel="stylesheet" href="{% static 'IFRI_comotorage/styles.css' %}">
+    <style>
+.background-blur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: url('{% static "IFRI_comotorage/images/back.png" %}');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: brightness(85%) blur(0.4px);
+    z-index: 1;
+}
+</style>
 </head>
 <body>
 
     <header>
-        <img src="Asset/ressources/Images/logo_IFRI_comotorage.png" alt="image">
+        <img src="{% static 'IFRI_comotorage/images/logo_IFRI_comotorage.png' %}" alt="image">
         <div>
             <a href="signup.html"><h2>Sign Up</h2></a>
             <a href="signin.html"><h2>Sign In</h2></a>
@@ -22,7 +38,7 @@
         <div class="background-blur"></div>
         <section>
             <div>
-                <img src="Asset/ressources/Images/car.png" alt="Blue hatchback car with two people sitting inside">
+                <img src="{% static 'IFRI_comotorage/images/car.png' %}" alt="Blue hatchback car with two people sitting inside">
                 <p>Join now</p>
             </div>
             <div>
