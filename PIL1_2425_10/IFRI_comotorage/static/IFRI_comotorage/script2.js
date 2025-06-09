@@ -1,150 +1,78 @@
 let data = JSON.parse(localStorage.getItem("Account")) || [];
-const remember = localStorage.getItem("Remember");
 let account;
-const toSignUpButton = document.getElementById("to_signup");
-toSignUpButton.addEventListener("click", () => {
-  showCard("signup-form");
-  clearSignUp();
-});
-const toLogInButton = document.getElementById("to_login");
-toLogInButton.addEventListener("click", () => {
-  showCard("login-form");
-  clearSignUp();
-});
+const remember = localStorage.getItem("Remember");
 
-// Helper function to show or hide cards
+// Switch between forms (login or signup)
 function showCard(form) {
   document.querySelectorAll("section").forEach((element) => {
     element.style.display = element.className === form ? "" : "none";
   });
 }
 
-// Show Welcome if account exists
+// Display login form if no account is found
 if (remember) {
   account = data.find(item => item.username === remember);
-  if (account) toWelcome();
+  if (account) showCard("welcome-form");
 } else {
   showCard("login-form");
 }
 
-// Show Error
-function showError(box, display, error) {
-  box.parentElement.classList.add("invalid");
-  display.innerHTML = error;
-  display.parentElement.style.display = "block";
-}
-
-function hideError(box, display) {
-  box.parentElement.classList.remove("invalid");
-  display.innerHTML = "";
-  display.parentElement.style.display = "none";
-}
-
-// Check if value exists in data
-function checkIfExists(field, value) {
-  return data.some(item => item[field] === value);
-}
-
-// Sign Up ---------------------------------------------------------------->
+// Sign Up Logic
 const regForm = {
   username: document.getElementById("username"),
   email: document.getElementById("email"),
   password: document.getElementById("reg_password"),
   passwordConfirm: document.getElementById("conreg_password"),
-  check: document.getElementById("reg_check"),
   submitButton: document.getElementById("signup_submit"),
 };
 
-let validation = {
-  username: false,
-  email: false,
-  password: false,
-  passwordConfirm: false,
-};
-
-// Validate form fields
-function validateUsername() {
-  const usernameRegex = /^[A-Za-z0-9_.]{0,25}$/;
+// Active ou désactive le bouton de soumission en fonction de la validité des champs
+function toggleSubmitButton() {
   const username = regForm.username.value;
-  if (!username.match(usernameRegex)) {
-    showError(regForm.username, document.getElementById("username_error"), "Username can only use letters, numbers, underscores, and periods.");
-    validation.username = false;
-  } else if (checkIfExists("username", username)) {
-    showError(regForm.username, document.getElementById("username_error"), "This username is already taken.");
-    validation.username = false;
-  } else {
-    hideError(regForm.username, document.getElementById("username_error"));
-    validation.username = true;
-  }
-}
-
-function validateEmail() {
-  const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   const email = regForm.email.value;
-  if (!email.match(emailRegex)) {
-    showError(regForm.email, document.getElementById("email_error"), "Invalid email.");
-    validation.email = false;
-  } else if (checkIfExists("email", email)) {
-    showError(regForm.email, document.getElementById("email_error"), "This email is already taken.");
-    validation.email = false;
-  } else {
-    hideError(regForm.email, document.getElementById("email_error"));
-    validation.email = true;
-  }
-}
-
-function validatePassword() {
   const password = regForm.password.value;
-  if (!password) {
-    showError(regForm.password, document.getElementById("reg_password_error"), "Password can't be empty.");
-    validation.password = false;
-  } else {
-    hideError(regForm.password, document.getElementById("reg_password_error"));
-    validation.password = true;
-  }
+  const passwordConfirm = regForm.passwordConfirm.value;
+
+  const isValid =
+    username && email && password && password === passwordConfirm;
+
+  regForm.submitButton.disabled = !isValid;
 }
 
-function validatePasswordConfirm() {
-  const confirmPassword = regForm.passwordConfirm.value;
-  if (confirmPassword !== regForm.password.value) {
-    showError(regForm.passwordConfirm, document.getElementById("conreg_password_error"), "Passwords do not match.");
-    validation.passwordConfirm = false;
-  } else {
-    hideError(regForm.passwordConfirm, document.getElementById("conreg_password_error"));
-    validation.passwordConfirm = true;
+// Validation des champs lors de la saisie
+function validateSignup() {
+  const username = regForm.username.value;
+  const email = regForm.email.value;
+  const password = regForm.password.value;
+  const passwordConfirm = regForm.passwordConfirm.value;
+
+  if (!username || !email || !password || password !== passwordConfirm) {
+    alert("Please fill out the form correctly.");
+    return;
   }
+
+  // Vérification si le nom d'utilisateur ou l'email existe déjà
+  if (data.some(item => item.username === username || item.email === email)) {
+    alert("Username or email already taken.");
+    return;
+  }
+
+  // Sauvegarde du nouvel utilisateur
+  data.push({ username, email, password });
+  localStorage.setItem("Account", JSON.stringify(data));
+  showCard("login-form");
 }
 
-// Check Sign Up
-regForm.submitButton.addEventListener("click", () => {
-  validateUsername();
-  validateEmail();
-  validatePassword();
-  validatePasswordConfirm();
+// Événements pour valider les champs à chaque saisie
+regForm.username.addEventListener("input", toggleSubmitButton);
+regForm.email.addEventListener("input", toggleSubmitButton);
+regForm.password.addEventListener("input", toggleSubmitButton);
+regForm.passwordConfirm.addEventListener("input", toggleSubmitButton);
 
-  if (Object.values(validation).every(val => val === true)) {
-    data.push({
-      username: regForm.username.value,
-      email: regForm.email.value,
-      password: regForm.password.value,
-    });
-    localStorage.setItem("Account", JSON.stringify(data));
-    showCard("login-form");
-    clearSignUp();
-  }
-});
+// Sign up event listener
+regForm.submitButton.addEventListener("click", validateSignup);
 
-// Save Data and Clear Fields
-function clearSignUp() {
-  regForm.username.value = "";
-  regForm.email.value = "";
-  regForm.password.value = "";
-  regForm.passwordConfirm.value = "";
-  regForm.check.checked = false;
-  Object.keys(validation).forEach(field => validation[field] = false);
-}
-
-// Login ------------------------------------------------------------------>
+// Login Logic
 const logForm = {
   usernameOrEmail: document.getElementById("username_email"),
   password: document.getElementById("password"),
@@ -156,40 +84,34 @@ const logForm = {
 function login() {
   const value = logForm.usernameOrEmail.value;
   const user = data.find(item => item.username === value || item.email === value);
+
   if (user && user.password === logForm.password.value) {
     if (logForm.remember.checked) {
       localStorage.setItem("Remember", user.username);
     }
     account = user;
-    toWelcome();
-    clearLogin();
+    showCard("welcome-form");
   } else {
-    showError(logForm.usernameOrEmail, document.getElementById("username_email_error"), "Invalid credentials.");
+    alert("Invalid credentials.");
   }
 }
 
+// Login event listener
 logForm.submitButton.addEventListener("click", login);
 
-// Clear Login Fields
-function clearLogin() {
-  logForm.usernameOrEmail.value = "";
-  logForm.password.value = "";
-  logForm.remember.checked = false;
-}
-
-// Welcome Page ------------------------------------------------------------>
+// Welcome Page Logic
 function toWelcome() {
   document.getElementById("name_output").textContent = account.username;
   showCard("welcome-form");
 }
 
-// Logout
+// Logout Logic
 document.getElementById("logout_btn").addEventListener("click", () => {
   localStorage.removeItem("Remember");
   showCard("login-form");
 });
 
-// Change Theme ------------------------------------------------------------>
+// Change Theme Logic
 const changeThemeButton = document.getElementById("change_theme");
 
 function setTheme(theme) {

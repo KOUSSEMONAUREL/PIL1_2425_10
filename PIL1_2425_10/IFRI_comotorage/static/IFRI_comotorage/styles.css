@@ -26,7 +26,8 @@ header {
 header div {
     display: flex;
     gap: 4vw;
-    font-size: clamp(.6rem, 2vw, 18px);
+    font-size: clamp(.4rem, 1.8vw, 16px);
+    left: -20%;
 }
 
 header img {

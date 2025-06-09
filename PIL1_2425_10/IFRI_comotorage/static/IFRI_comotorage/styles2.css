@@ -6,7 +6,7 @@ body {
     height: 100vh;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     flex-direction: column;
 }
 
@@ -19,20 +19,30 @@ body {
 
 .Accueil h1 {
     color: rgba(0, 0, 255, 0.921);
-    font-size: 8vw;
+    font-size: clamp(1vw, 3vw, 4vw);
 }
 
 .Accueil h2{
-    font-size: 5vw;
+    font-size: clamp(1vw, 2vw, 3vw);
+}
+
+.Accueil > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .Accueil img {
     width: 200px;
     height: 100px;
+    padding: 10vh;
 }
 
 .sec2 {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
     gap: 10px;
 }
 
@@ -40,31 +50,23 @@ body {
     color: blue;
 }
 
-.Accueil div {
+.Accueil {
+    width: 100%;
+}
+
+.sec2 div {
     border: 2px solid gainsboro;
+    box-shadow: 0 0 2px 1px rgb(7, 100, 212);
     text-align: center;
     margin-top: 0;
-    min-width: 100px;
+    width: 40vw;
+    max-width: 300px;
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: center;
     border-radius: 5px;
-    padding: 10px;
-}
-
-.Accueil > div {
-    margin-top: 10px;
-}
-
-#cont {
-    flex-direction: row;
-    min-width: 230px;
-    gap: 20px;
-}
-
-#cont i{
-    color: blue;
+    padding: 5px;
 }
 
 /* Rechercher */
@@ -84,6 +86,7 @@ body {
     width: 100vw;
     height: 40vh;
     background-color: rgb(148, 149, 163);
+    z-index: 0;
 }
 
 .Rechercher div {
@@ -111,15 +114,17 @@ body {
 
 .sec31 input {
     width: 70vw;
-    height: 4vh;
+    height: 3.8vh;
     border: none;
     outline: none;
 }
 
 .sec41 {
-    height: 25vh;
+    display: flex;
+    height: 27vh;
     margin-top: 5px;
-    background-color: blue;
+    overflow-x: hidden;
+    background-color: rgb(174, 174, 181);
 }
 
 /* Publier */
@@ -230,7 +235,7 @@ input {
 
 /* Pied de page */
 
-footer {
+#footer {
     display: flex;
     justify-content: center;
     flex-wrap: nowrap;
@@ -238,9 +243,11 @@ footer {
     width: 90%;
     gap: 15px;
     padding-top: 10px;
+    margin-bottom: 20px;
+    z-index: 1;
 }
 
-footer a {
+#footer a {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -248,4 +255,63 @@ footer a {
     text-decoration: none;
     color: initial;
     font-size: 3.9vw;
+}
+
+#footer a:hover {
+    color: #0467e0;
+ }
+
+ #span {
+    display: none;
+ }
+
+@media ( min-width: 500px) {
+
+    .Accueil {
+        width: 80vw;
+    }
+
+    #footer {
+        position: absolute;
+        justify-content: flex-start;
+        flex-direction: column;
+        border-top: none;
+        border: 2px solid rgb(246, 244, 244);
+        width: 100px;
+        border-radius: 5px;
+        gap: 30px;
+        padding-top: 0;
+        top: 25%;
+        left: -120px;
+        transition: left 0.8s ease;
+    }
+
+    #footer a {
+    color: initial;
+    font-size: 20px;
+    padding: 4px;
+}
+
+    #span {
+        background-color: rgb(242, 242, 242);
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 25px;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transition: left 0.4s ease;
+    }
+
+    #span:hover {
+        background-color: #2b84f0;
+        font-size: 30px;
+        left: 10px;
+        color: white;
+    }
+
 }

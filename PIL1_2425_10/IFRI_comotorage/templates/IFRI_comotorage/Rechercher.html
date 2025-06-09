@@ -30,11 +30,15 @@
             </div>
         </section>
 
-        <section class="sec41"></section>
+        <section class="sec41" id="searchResults"></section>
         
     </section>
 
-    <footer>
+    <span id="span">
+        <i class="fas fa-angle-right"></i> 
+    </span>
+
+    <footer id="footer">
         <a href="{% url 'Accueil' %}"><i class="fas fa-home"></i>Accueil</a>
         <a href="{% url 'Rechercher' %}"><i class="fas fa-search"></i>Rechercher</a>
         <a href="{% url 'Publier' %}"><i class="fas fa-plus-circle"></i>Publier</a>
@@ -44,6 +48,7 @@
     
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="{% static 'IFRI_comotorage/script.js' %}"></script>
+    <script src="{% static 'IFRI_comotorage/script4.js' %}"></script>
 
 </body>
 </html> 
