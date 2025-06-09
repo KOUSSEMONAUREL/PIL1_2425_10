@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Messagerie - IFRI Covoiturage</title>
+  <link rel="stylesheet" href="{% static 'mon_app/style.css' %}">
+</head>
+<body>
+  <header>
+    <div class="logo">🚗 IFRI Comotorage</div>
+    <nav>
+      <ul>
+        <li><a href="{% url 'home' %}">Accueil</a></li>
+        <li><a href="{% url 'list_offers' %}">Rechercher</a></li>
+        <li><a href="{% url 'creer_offre' %}">Publier</a></li>
+        <li><a href="{% url 'conversations' %}">Messagerie</a></li>
+        <li><a href="{% url 'profil' %}">Profil</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="messagerie">
+      <h2>Mes conversations</h2>
+
+      {% if users %}
+        <div class="conversations-liste">
+          {% for u in users %}
+            <a href="{% url 'conversation' u.id %}" class="conversation-card">
+              <div class="photo">
+                <img src="{{ u.photo.url|default:'/static/default-user.png' }}" alt="Photo de {{ u.username }}">
+              </div>
+              <div class="infos">
+                <strong>{{ u.first_name }} {{ u.last_name }}</strong><br>
+                <span>{{ u.email }}</span>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p>Vous n'avez encore aucune conversation.</p>
+      {% endif %}
+    </section>
+  </main>
+</body>
+</html>
