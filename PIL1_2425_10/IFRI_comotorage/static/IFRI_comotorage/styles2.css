@@ -1,5 +1,5 @@
 body {
-    /* overflow: hidden; */
+    overflow: hidden;
     background-color: white;
     font-family: 'Roboto', sans-serif;
     margin: 0;
@@ -83,7 +83,7 @@ body {
 .sec21 {
     width: 100vw;
     height: 40vh;
-    background-color: aqua;
+    background-color: rgb(148, 149, 163);
 }
 
 .Rechercher div {
@@ -110,7 +110,7 @@ body {
 }
 
 .sec31 input {
-    width: 75vw;
+    width: 70vw;
     height: 4vh;
     border: none;
     outline: none;

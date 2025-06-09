@@ -21,6 +21,7 @@
     background-size: cover;
     filter: brightness(85%) blur(0.4px);
     z-index: 1;
+    animation: move 4s linear infinite alternate;
 }
 </style>
 </head>
@@ -29,8 +30,7 @@
     <header>
         <img src="{% static 'IFRI_comotorage/images/logo_IFRI_comotorage.png' %}" alt="image">
         <div>
-            <a href="signup.html"><h2>Sign Up</h2></a>
-            <a href="signin.html"><h2>Sign In</h2></a>
+            <a href="{% url 'Login' %}"><h2>Log In</h2></a>
         </div>
     </header>
 
@@ -47,11 +47,45 @@
             </div>
         </section>
     </section>
-    
-     <footer>
+
+    <section class="furt0">
+        <section class="furt" id="furt1">
+            <h2>HOW IT WORKS ?</h2>
+            <p>L'application IFRI_comotorage vise à simplifier le partage de trajets quotidiens entre le domicile et le campus de l'IFRI. Chaque utilisateur commence par créer un profil détaillé, incluant son point de départ habituel et ses horaires. Les conducteurs peuvent ensuite publier leurs offres de covoiturage en spécifiant le point de départ et d'arrivée, l'heure et le nombre de places disponibles. De même, les passagers peuvent publier leurs demandes avec des informations similaires. Un algorithme intelligent met en relation conducteurs et passagers en se basant sur la proximité géographique et la compatibilité horaire, proposant ainsi les combinaisons les plus pertinentes. Une messagerie instantanée est intégrée pour permettre aux utilisateurs d'affiner les détails de leurs rendez-vous et de communiquer en temps réel. L'historique des conversations est également conservé pour référence future.</p>
+        </section>
+
+        <section class="furt" id="furt2">
+            <h2>ABOUT ?</h2>
+            <p>IFRI_comotorage est une application web conçue dans le cadre d'un projet intégrateur de l'Institut de Formation et de Recherche en Informatique (IFRI) de l'Université d'Abomey-Calavi. L'objectif principal est de permettre aux étudiants de l'IFRI de partager leurs trajets quotidiens entre leur domicile et le campus, favorisant ainsi la collaboration et l'optimisation des déplacements. Développée par des groupes d'étudiants en IA, IM, GL, SE&IoT et SI , l'application met en œuvre les compétences acquises en développement web, bases de données, algorithmique et programmation Python. Elle dispose de modules clés tels que la gestion des comptes et profils utilisateur, la mise en correspondance des conducteurs et passagers, et une messagerie instantanée. Un accent particulier est mis sur une interface utilisateur intuitive, claire et moderne, avec une priorité pour les écrans mobiles.</p>
+        </section>
+
+        <section class="furt" id="furt3">
+            <h2>CONTACT</h2>
+            <p>Pour toute question ou information concernant le projet IFRI_comotorage, vous pouvez vous adresser à l'équipe pédagogique en charge de la supervision et de l'encadrement du projet:</p>
+            <ul>
+                <li>Supervision: M. Ratheil HOUNDJI </li>
+                <li>Encadrants: M. Armand ACCROMBESSI et Mme Maryse GAHOU</li>
+            </ul>
+        </section>
+    </section>    
+
+    <section class="dots">
+        <span class="dot active" onclick="showSlide(0)"></span>
+        <span class="dot" onclick="showSlide(1)"></span>
+        <span class="dot" onclick="showSlide(2)"></span>
+    </section>
+        
+    <section class="prefooter">
         <h3>How It Works</h3>
         <h3>About</h3>
         <h3>Contact</h3>
-     </footer>
+    </section>
+
+    <footer>
+        <p class="copyright">&copy; 2025 - IFRI_comotorage</p>
+        <a href="#" class="cgv">Conditions générales d'utilisation</a>
+    </footer>
+
+    <script src="{% static 'IFRI_comotorage/script1.js' %}"></script>
 </body>
 </html>

@@ -1,4 +1,7 @@
-from django.shortcuts import render 
+from django.shortcuts import render
+from django.http import JsonResponse
+from .models import Location
+import json 
 
 def index (request):
     return render(request, 'IFRI_comotorage/index.html')
@@ -6,11 +9,8 @@ def index (request):
 def Accueil (request):
     return render(request, 'IFRI_comotorage/Accueil.html')
 
-def signup (request):
-    return render(request, 'IFRI_comotorage/signup.html')
-
-def signin (request):
-    return render(request, 'IFRI_comotorage/signin.html')
+def Login (request):
+    return render(request, 'IFRI_comotorage/Login.html')
 
 def Rechercher (request):
     return render(request, 'IFRI_comotorage/Rechercher.html')
@@ -23,3 +23,13 @@ def Messagerie (request):
 
 def Profil (request):
     return render(request, 'IFRI_comotorage/Profil.html')
+
+def save_location(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        name = data.get('name')
+        lat = data.get('lat')
+        lon = data.get('lon')
+        Location.objects.create(name=name, latitude=lat, longitude=lon)
+        return JsonResponse({'status': 'ok'})
+    return JsonResponse({'status': 'error'}, status=400)

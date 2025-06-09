@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import Articles
+from .models import Location
 
-class AdminArticle(admin.ModelAdmin):
-    list_display = ('titre', 'contenue', 'prix', 'image', 'actif')
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ('name', 'latitude', 'longitude')
 
-admin.site.register(Articles, AdminArticle)
+admin.site.register(Location, LocationAdmin)
