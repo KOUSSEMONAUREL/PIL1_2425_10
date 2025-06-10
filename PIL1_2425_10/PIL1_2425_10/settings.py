@@ -79,8 +79,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'comotorage',
-        'USER': 'root',
-        'PASSWORD': 'S1mph0n1_MYSQL',
+        'USER': 'default',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS' : {

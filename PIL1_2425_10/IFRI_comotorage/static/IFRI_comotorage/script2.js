@@ -1,11 +1,17 @@
 let data = JSON.parse(localStorage.getItem("Account")) || [];
 let account;
 const remember = localStorage.getItem("Remember");
+const formsignin = document.getElementsByClassName('login-form')[0];
+const formsignup = document.getElementsByClassName('signup-form')[0];
+const butsignup = document.getElementById('to_signup');
+const butsignin = document.getElementById('to_login');
 
-// Switch between forms (login or signup)
+butsignup.addEventListener('click', () => showCard("signup-form"));
+butsignin.addEventListener('click', () => showCard("login-form"));
+
 function showCard(form) {
   document.querySelectorAll("section").forEach((element) => {
-    element.style.display = element.className === form ? "" : "none";
+    element.style.display = element.classList.contains(form) ? "" : "none";
   });
 }
 
