@@ -1,5 +1,3 @@
-
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -43,25 +41,23 @@ class Match(models.Model):
     request = models.ForeignKey(RideRequest, on_delete=models.CASCADE)
     matched_on = models.DateTimeField(auto_now_add=True)
 
-class Message(models.Model):
-    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='sent_messages')
-    receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='received_messages')
-    content = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-    seen = models.BooleanField(default=False)
-from django.conf import settings
+
+# mon_app/models.py
+from django.contrib.auth import get_user_model
+from django.db import models
+
+User = get_user_model()
 
 class Message(models.Model):
-    sender = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='sent_messages', on_delete=models.CASCADE)
-    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='received_messages', on_delete=models.CASCADE)
+    sender = models.ForeignKey(User, related_name='sent_messages', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name='received_messages', on_delete=models.CASCADE)
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        ordering = ['timestamp']
+    def _str_(self):
+        return f"{self.sender} → {self.receiver}"
 
-    def __str__(self):
-        return f"{self.sender} → {self.receiver}: {self.content[:30]}"
+
 from django.db import models
 from django.conf import settings
 
@@ -73,10 +69,13 @@ class Offre(models.Model):
     )
     depart = models.CharField(max_length=100)
     arrivee = models.CharField(max_length=100)
-    date = models.DateField()
-    heure = models.TimeField()
+    date_depart = models.DateTimeField(null=True, blank=True)
     vehicule = models.CharField(max_length=100)
     places_disponibles = models.PositiveIntegerField()
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
 
-    def _str_(self):
-        return f"{self.depart} → {self.arrivee} ({self.date})"
+    def __str__(self):
+        # Format : 10/06/2025 à 14:30
+        date_str = self.date.strftime("%d/%m/%Y")
+        return f"{self.depart} → {self.arrivee} ({date_str} à {heure_str})"

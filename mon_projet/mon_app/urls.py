@@ -9,12 +9,11 @@ urlpatterns = [
     path('offres/', views.list_offers_view, name='list_offers'),
     path('profil/', views.profil_view, name='profil'),
     path('profil/modifier/', views.modifier_profil_view, name='modifier_profil'),
-    path('messages/<int:user_id>/', views.conversation_view, name='conversation'),
     path('conversations/', views.conversations_view, name='conversations'),
     path('offre/nouvelle/', views.creer_offre_view, name='creer_offre'),
-    path('offre/nouvelle/', views.creer_offre_view, name='creer_offre'),
-
+    path('messages/<int:user_id>/', views.conversation_detail_view, name='conversation_detail'),
 ]
+
 from django.conf import settings
 from django.conf.urls.static import static
 

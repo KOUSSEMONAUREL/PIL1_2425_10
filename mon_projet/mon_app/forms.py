@@ -41,4 +41,28 @@ from .models import Offre
 class OffreForm(forms.ModelForm):
     class Meta:
         model = Offre
-        fields = ['depart', 'arrivee', 'date', 'heure', 'vehicule', 'places_disponibles']
+        fields = ['depart', 'arrivee', 'date_depart', 'vehicule', 'places_disponibles']
+        widgets = {
+            'date_depart': forms.DateTimeInput(
+                attrs={
+                    'type': 'datetime-local',
+                    'class': 'form-control',
+                    'placeholder': 'Choisir la date et l’heure de départ'
+                },
+                format='%Y-%m-%dT%H:%M'
+            ),
+        }
+    def __init__(self, *args, **kwargs):
+        super(OffreForm, self).__init__(*args, **kwargs)
+        self.fields['date_depart'].input_formats = ['%Y-%m-%dT%H:%M']      
+# mon_app/forms.py
+from django import forms
+from .models import Message
+
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={'placeholder': 'Écris ton message ici...'}),
+        }

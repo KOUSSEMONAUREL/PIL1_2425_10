@@ -27,7 +27,7 @@
       {% if users %}
         <div class="conversations-liste">
           {% for u in users %}
-            <a href="{% url 'conversation' u.id %}" class="conversation-card">
+            <a href="{% url 'conversation_detail' user.id %}" class="conversation-card">
               <div class="photo">
                 <img src="{{ u.photo.url|default:'/static/default-user.png' }}" alt="Photo de {{ u.username }}">
               </div>

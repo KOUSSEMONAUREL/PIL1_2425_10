@@ -24,14 +24,9 @@
     <section class="conversation">
       <h2>Discussion avec {{ destinataire.first_name }}</h2>
 
-      <div class="message-container">
+      <div class="messages">
         {% for msg in messages %}
-          <div class="message {% if msg.expediteur == user %}sent{% else %}received{% endif %}">
-            <p>{{ msg.contenu }}</p>
-            <span>{{ msg.date|date:"d/m/Y H:i" }}</span>
-          </div>
-        {% empty %}
-          <p>Aucun message pour le moment.</p>
+      <p><strong>{{ msg.sender.username }} :</strong> {{ msg.content }}</p>
         {% endfor %}
       </div>
 
@@ -42,5 +37,8 @@
       </form>
     </section>
   </main>
+  <a href="{% url 'conversation_detail' user_id=offre.user.id %}">Envoyer un message</a>
+  <footer>
+    <p>&copy; 2025 IFRI Covoiturage</p>
 </body>
 </html>

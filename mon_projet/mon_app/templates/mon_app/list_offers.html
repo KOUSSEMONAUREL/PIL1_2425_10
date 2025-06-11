@@ -31,10 +31,16 @@
               <h3>{{ offre.utilisateur.first_name }} {{ offre.utilisateur.last_name }}</h3>
               <p><strong>Départ :</strong> {{ offre.depart }}</p>
               <p><strong>Arrivée :</strong> {{ offre.arrivee }}</p>
-              <p><strong>Date :</strong> {{ offre.date }}</p>
-              <p><strong>Heure :</strong> {{ offre.heure }}</p>
+              <p><strong>Date :</strong> {{ offre.date_depart|date:"d F Y à H\hi" }}</p>
               <p><strong>Places dispo :</strong> {{ offre.places_disponibles }}</p>
-              <a href="{% url 'conversation' offre.utilisateur.id %}" class="btn">Contacter</a>
+
+              {% if offre.utilisateur and offre.utilisateur.id %}
+                <a href="{% url 'conversation_detail' user_id=offre.utilisateur.id %}" class="btn">
+                  💬 Contacter {{ offre.utilisateur.username }}
+                </a>
+              {% else %}
+                <span style="color: gray;">Utilisateur inconnu</span>
+              {% endif %}
             </div>
           {% endfor %}
         </div>
@@ -43,15 +49,14 @@
       {% endif %}
     </section>
   </main>
-    <div class="top-bar">
-        <form method="get" class="search-bar">
-            <input type="text" name="q" placeholder="🔍 Rechercher un trajet..." value="{{ query }}">
-            <button type="submit">Rechercher</button>
-        </form>
 
-        <a href="{% url 'creer_offre' %}" class="btn-nouvelle-offre">➕ Nouvelle offre</a>
-    </div>
+  <div class="top-bar">
+    <form method="get" class="search-bar">
+      <input type="text" name="q" placeholder="🔍 Rechercher un trajet..." value="{{ query }}">
+      <button type="submit">Rechercher</button>
+    </form>
 
-
+    <a href="{% url 'creer_offre' %}" class="btn-nouvelle-offre">➕ Nouvelle offre</a>
+  </div>
 </body>
 </html>
