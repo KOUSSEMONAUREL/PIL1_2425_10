@@ -1,15 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.db.models import Q
-from .models import CustomUser, Message, Offre
+from django.db.models import Q, Max
+from .models import CustomUser, Offre, PrivateMessage
 from .forms import (
     CustomUserCreationForm,
     CustomAuthenticationForm,
     CustomUserUpdateForm,
-    MessageForm,
-    OffreForm
+    OffreForm,
+    PrivateMessageForm,
 )
 
 # --- Authentification ---
@@ -92,36 +91,55 @@ def list_offers_view(request):
 
 
 # --- Messagerie ---
-@login_required
-def conversations_view(request):
-    messages_all = Message.objects.filter(Q(sender=request.user) | Q(receiver=request.user)).order_by('timestamp')
-    conversations = {}
-    for msg in messages_all:
-        other_user = msg.receiver if msg.sender == request.user else msg.sender
-        conversations[other_user] = msg  # On garde le plus récent
-    return render(request, 'mon_app/listes_conversation.html', {'conversations': conversations.items()})
+from django.db.models import Q, Max
+from .models import PrivateMessage
+from django.contrib.auth.decorators import login_required
 
 @login_required
-def conversation_detail_view(request, user_id):
-    other_user = get_object_or_404(CustomUser, pk=user_id)
-    messages_list = Message.objects.filter(
-        sender__in=[request.user, other_user],
-        receiver__in=[request.user, other_user]
+def conversations_box_view(request):
+    messages = PrivateMessage.objects.filter(
+        Q(sender=request.user) | Q(recipient=request.user)
+    ).order_by('-timestamp')
+
+    latest_messages = {}
+    for msg in messages:
+        user = msg.recipient if msg.sender == request.user else msg.sender
+        if user not in latest_messages:
+            latest_messages[user] = msg
+
+    return render(request, 'mon_app/messaging/conversations_box.html', {
+        'conversations': latest_messages
+    })
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from .models import PrivateMessage, CustomUser
+from .forms import PrivateMessageForm
+
+@login_required
+def chat_with_user_view(request, uid):
+    contact = get_object_or_404(CustomUser, id=uid)
+
+    messages_qs = PrivateMessage.objects.filter(
+        Q(sender=request.user, recipient=contact) |
+        Q(sender=contact, recipient=request.user)
     ).order_by('timestamp')
 
     if request.method == 'POST':
-        form = MessageForm(request.POST)
+        form = PrivateMessageForm(request.POST)
         if form.is_valid():
             msg = form.save(commit=False)
             msg.sender = request.user
-            msg.receiver = other_user
+            msg.recipient = contact
             msg.save()
-            return redirect('conversation_detail', user_id=other_user.id)
+            return redirect('chat_with_user', uid=contact.id)
     else:
-        form = MessageForm()
+        form = PrivateMessageForm()
 
-    return render(request, 'mon_app/conversation.html', {
-        'messages': messages_list,
-        'form': form,
-        'other_user': other_user,
+    return render(request, 'mon_app/messaging/chat.html', {
+        'contact': contact,
+        'messages': messages_qs,
+        'form': form
     })
+
+

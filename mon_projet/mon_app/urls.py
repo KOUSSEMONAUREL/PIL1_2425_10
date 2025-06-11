@@ -9,9 +9,10 @@ urlpatterns = [
     path('offres/', views.list_offers_view, name='list_offers'),
     path('profil/', views.profil_view, name='profil'),
     path('profil/modifier/', views.modifier_profil_view, name='modifier_profil'),
-    path('conversations/', views.conversations_view, name='conversations'),
     path('offre/nouvelle/', views.creer_offre_view, name='creer_offre'),
-    path('messages/<int:user_id>/', views.conversation_detail_view, name='conversation_detail'),
+    path('messagerie/', views.conversations_box_view, name='conversations_box'),
+    path('messagerie/<int:uid>/', views.chat_with_user_view, name='chat_with_user'),
+    
 ]
 
 from django.conf import settings

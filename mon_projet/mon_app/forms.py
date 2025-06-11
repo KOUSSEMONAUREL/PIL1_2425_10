@@ -26,11 +26,11 @@ class CustomUserUpdateForm(forms.ModelForm):
             'first_name', 'last_name', 'phone_number', 'address',
             'departure_time', 'return_time', 'available_seats', 'photo'
         ]
-from .models import Message
+from .models import PrivateMessage
 
 class MessageForm(forms.ModelForm):
     class Meta:
-        model = Message
+        model = PrivateMessage
         fields = ['content']
         widgets = {
             'content': forms.Textarea(attrs={'rows': 2}),
@@ -55,14 +55,21 @@ class OffreForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(OffreForm, self).__init__(*args, **kwargs)
         self.fields['date_depart'].input_formats = ['%Y-%m-%dT%H:%M']      
-# mon_app/forms.py
-from django import forms
-from .models import Message
 
-class MessageForm(forms.ModelForm):
+
+from django import forms
+from .models import PrivateMessage
+
+class PrivateMessageForm(forms.ModelForm):
     class Meta:
-        model = Message
+        model = PrivateMessage
         fields = ['content']
         widgets = {
-            'content': forms.Textarea(attrs={'placeholder': 'Écris ton message ici...'}),
+            'content': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Votre message...'})
         }
+from .models import PrivateMessage
+
+class PrivateMessageForm(forms.ModelForm):
+    class Meta:
+        model = PrivateMessage
+        fields = ['content']

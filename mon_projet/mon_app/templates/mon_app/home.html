@@ -15,7 +15,7 @@
         <li><a href="{% url 'home' %}">Accueil</a></li>
         <li><a href="{% url 'list_offers' %}">Rechercher</a></li>
         <li><a href="{% url 'creer_offre' %}">Publier</a></li>
-        <li><a href="{% url 'conversations' %}">Messagerie</a></li>
+        <li><a href="{% url 'conversations_box' %}">Messagerie</a></li>
         <li><a href="{% url 'profil' %}">Profil</a></li>
       </ul>
     </nav>
@@ -28,7 +28,7 @@
       <div class="actions">
         <a href="{% url 'list_offers' %}" class="card">🔍 Rechercher un trajet</a>
         <a href="{% url 'creer_offre' %}" class="card">➕ Publier une offre</a>
-        <a href="{% url 'conversations' %}" class="card">💬 Voir mes messages</a>
+        <a href="{% url 'conversations_box' %}" class="card">💬 Voir mes messages</a>
         <a href="{% url 'profil' %}" class="card">👤 Voir mon profil</a>
       </div>
     </section>

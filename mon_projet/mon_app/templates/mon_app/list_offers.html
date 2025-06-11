@@ -14,7 +14,7 @@
         <li><a href="{% url 'home' %}">Accueil</a></li>
         <li><a href="{% url 'list_offers' %}">Rechercher</a></li>
         <li><a href="{% url 'creer_offre' %}">Publier</a></li>
-        <li><a href="{% url 'conversations' %}">Messagerie</a></li>
+        <li><a href="{% url 'conversations_box' %}">Messagerie</a></li>
         <li><a href="{% url 'profil' %}">Profil</a></li>
       </ul>
     </nav>
@@ -34,14 +34,12 @@
               <p><strong>Date :</strong> {{ offre.date_depart|date:"d F Y à H\hi" }}</p>
               <p><strong>Places dispo :</strong> {{ offre.places_disponibles }}</p>
 
-              {% if offre.utilisateur and offre.utilisateur.id %}
-                <a href="{% url 'conversation_detail' user_id=offre.utilisateur.id %}" class="btn">
-                  💬 Contacter {{ offre.utilisateur.username }}
-                </a>
-              {% else %}
-                <span style="color: gray;">Utilisateur inconnu</span>
-              {% endif %}
-            </div>
+              {% if offre.utilisateur %}
+              <a href="{% url 'chat_with_user' uid=offre.utilisateur.id %}">
+                💬 Contacter {{ offre.utilisateur.username }}
+              </a>
+            {% endif %}
+          </div>
           {% endfor %}
         </div>
       {% else %}

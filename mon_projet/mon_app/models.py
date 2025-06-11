@@ -42,20 +42,7 @@ class Match(models.Model):
     matched_on = models.DateTimeField(auto_now_add=True)
 
 
-# mon_app/models.py
-from django.contrib.auth import get_user_model
-from django.db import models
 
-User = get_user_model()
-
-class Message(models.Model):
-    sender = models.ForeignKey(User, related_name='sent_messages', on_delete=models.CASCADE)
-    receiver = models.ForeignKey(User, related_name='received_messages', on_delete=models.CASCADE)
-    content = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def _str_(self):
-        return f"{self.sender} → {self.receiver}"
 
 
 from django.db import models
@@ -79,3 +66,14 @@ class Offre(models.Model):
         # Format : 10/06/2025 à 14:30
         date_str = self.date.strftime("%d/%m/%Y")
         return f"{self.depart} → {self.arrivee} ({date_str} à {heure_str})"
+from django.db import models
+from django.conf import settings
+
+class PrivateMessage(models.Model):
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sent_messages')
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='received_messages')
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"De {self.sender.username} à {self.recipient.username}"
