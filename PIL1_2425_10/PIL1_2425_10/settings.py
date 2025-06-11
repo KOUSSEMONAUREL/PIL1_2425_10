@@ -81,8 +81,8 @@ CHANNEL_LAYERS = {
     }
 }
 
-LOGIN_REDIRECTION_URL = '/accueil/'
-LOGOUT_REDIRECTION_URL = '/Login/'
+LOGIN_REDIRECT_URL = 'Accueil'
+LOGOUT_REDIRECT_URL = 'Login'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
