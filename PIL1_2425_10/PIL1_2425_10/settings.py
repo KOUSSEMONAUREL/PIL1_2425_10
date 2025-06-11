@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,7 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'IFRI_comotorage',
+    'channels',
 ]
+
+ASGI_APPLICATION = 'PIL1_2425_10.asgi.application'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -71,6 +75,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'PIL1_2425_10.wsgi.application'
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
+LOGIN_REDIRECTION_URL = '/accueil/'
+LOGOUT_REDIRECTION_URL = '/Login/'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases

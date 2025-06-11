@@ -180,47 +180,95 @@ input {
 
 /* Messagerie */
 
-.sign-in-container {
-background: #ffffff;
-padding: 40px 50px;
-border-radius: 8px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-width: 300px;
+.messenger {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh; 
+    width: 90vw;
+    position: relative;
 }
 
-.sign-in-container h2 {
-text-align: center;
-margin-bottom: 30px;
-font-size: 24px;
-color: #0a3d62;
+.chat__item__container {
+    gap: 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column-reverse;
+    overflow-y: auto;
+    height: calc(100vh - 150px);
+    border: 1px solid #e6e5e5;
+    background-color: #faf9f9;
+    flex-grow: 1;  
+    min-width: 100%; 
+    padding-bottom: 70px; 
 }
 
-.sign-in-container form {
-display: flex;
-flex-direction: column;
+.chat-input-area { 
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 800px;
+    background-color: white; 
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    z-index: 100;
+    border-radius: 10px;
 }
 
-.sign-in-container input {
-margin-bottom: 15px;
-padding: 15px;
-border: 1px solid #ced6e0;
-border-radius: 6px;
-font-size: 16px;
+#id_message_send_input {
+    flex-grow: 1; 
+    border-radius: 20px; 
+    width: 90%;
+    padding: 10px 15px; 
+    border: 1px solid #e0e0e0;
 }
 
-.sign-in-container button {
-padding: 15px;
-background-color: #2ecc71;
-color: white;
-border: none;
-border-radius: 6px;
-cursor: pointer;
-font-size: 16px;
-transition: background-color 0.3s;
+#id_message_send_button {
+    border-radius: 50%;
+    border: none;
+    background-color: #25D366; 
+    color: white;
+    box-shadow: none; 
+    min-width: 45px; 
+    min-height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.sign-in-container button:hover {
-background-color: #27ae60;
+#id_message_send_button i {
+    transform: rotate(45deg);
+}
+
+#id_message_send_button:hover {
+    background-color: #1ea74d;
+    color: white;
+}
+
+.chat__item__container div {
+    max-width: 70%; 
+    padding: 10px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+    word-wrap: break-word; 
+    font-size: clamp(1.2rem, 1.5vw, 2rem);
+}
+
+.my-message {
+    background-color: #dcf8c6; 
+    align-self: flex-end; 
+    margin-left: auto; 
+}
+
+.other-message {
+    background-color: #ffffff; 
+    border: 1px solid #e0e0e0;
+    align-self: flex-start; 
+    margin-right: auto; 
 }
 
 /* Profil */
