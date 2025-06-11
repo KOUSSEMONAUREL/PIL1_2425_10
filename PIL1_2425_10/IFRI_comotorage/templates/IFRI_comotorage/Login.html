@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login & Registration Form</title>
+    <link rel="icon" type="image/icon" href="{% static 'IFRI_comotorage/images/car.png' %}" />
+    <link rel="stylesheet" href="{% static 'IFRI_comotorage/styles1.css' %}" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <nav>
+        <h1></h1>
+        <div class="link-group">
+          <a id="change_theme"><i class="ri-sun-fill"></i></a>
+        </div>
+      </nav>
+
+      <section class="login-form">
+        <div class="card">
+          <h1>Login</h1>
+          {% if message %}
+            <p style="color: red;">{{ message }}</p>
+          {% endif %}
+          <form method="post" action="{% url 'Login' %}">
+            {% csrf_token %}
+            <div class="input-group">
+              <div class="username-email-input">
+                <div class="input-box">
+                  {{ form.username }}
+                  <label for="{{ form.username.id_for_label }}" class="input-label"
+                    >Username or Email</label
+                  >
+                </div>
+                <span>
+                  <p class="mark">!</p>
+                  <p class="error-text" id="username_email_error">{{ form.username.errors }}</p>
+                </span>
+              </div>
+              <div class="password-input">
+                <div class="input-box">
+                  {{ form.password }}
+                  <label for="{{ form.password.id_for_label }}" class="input-label">Password</label>
+                </div>
+                <span>
+                  <p class="mark">!</p>
+                  <p class="error-text" id="password_error">{{ form.password.errors }}</p>
+                </span>
+              </div>
+            </div>
+            <div class="check-element">
+              <input type="checkbox" name="remember-check" id="remember_check" />
+              <label for="remember_check">Remember me</label>
+            </div>
+            <button type="submit" id="login_submit" class="btn">LOGIN</button>
+          </form>
+        </div>
+        <div class="under-card">
+          <p>Don't have an account?</p>
+          <button id="to_signup">Create</button>
+        </div>
+      </section>
+
+      <section class="signup-form" style="display: none;"> 
+        <div class="card">
+          <h1>Sign Up</h1>
+          <form method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+            <div class="input-group">
+              <div class="username-input">
+                <div class="input-box">
+                  {{ reg_form.username }}
+                  <label for="{{ reg_form.username.id_for_label }}" class="input-label">Username</label>
+                </div>
+                <span>
+                  {% if reg_form.username.errors %}
+                    {{ reg_form.username.errors }}
+                  {% endif %}
+                </span>
+              </div>
+              <div class="email-input">
+                <div class="input-box">
+                  {{ reg_form.email }}
+                  <label for="{{ reg_form.email.id_for_label }}" class="input-label">Email</label>
+                </div>
+                <span>
+                  {% if reg_form.email.errors %}
+                    {{ reg_form.email.errors }}
+                  {% endif %}
+                </span>
+              </div>
+              <div class="password-input">
+                <div class="input-box">
+                  {{ reg_form.password1 }}
+                  <label for="{{ reg_form.password1.id_for_label }}" class="input-label">Password</label>
+                </div>
+                <span>
+                  {% if reg_form.password1.errors %}
+                    {{ reg_form.password1.errors }}
+                  {% endif %}
+                </span>
+              </div>
+              <div class="password-input">
+                <div class="input-box">
+                  {{ reg_form.password2 }}
+                  <label for="{{ reg_form.password2.id_for_label }}" class="input-label">Confirm Password</label>
+                </div>
+                <span>
+                  {% if reg_form.password2.errors %}
+                    {{ reg_form.password2.errors }}
+                  {% endif %}
+                </span>
+              </div>
+            </div>
+            <div class="check-element">
+              <input type="checkbox" name="reg-check" id="reg_check" />
+              <label for="reg_check">This account can only be used on this device.</label>
+            </div>
+            <button type="submit" id="signup_submit" class="btn">SIGN UP</button>
+          </form>
+        </div>
+        <div class="under-card">
+          <p>Already have an account?</p>
+          <button id="to_login">Login</button>
+        </div>
+      </section>
+
+      <section class="welcome-form" style="display: none;">
+        <div class="card" id="welcome_card">
+          <h1>Welcome, <span id="name_output">{% if request.user.is_authenticated %}{{ request.user.username }}{% else %}name{% endif %}</span></h1>
+          <div class="btn-group">
+            <button id="change_password_btn" class="cancel-btn btn">
+              Change Password
+            </button>
+            <button id="delete_account_btn" class="cancel-btn btn">
+              Delete Account
+            </button>
+            <button id="logout_btn" class="btn">LOGOUT</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="change-password-form" style="display: none;">
+        <div class="card" id="change_password_card">
+          <h1>Change Password</h1>
+          <div class="input-group">
+            <div class="password-input">
+              <div class="input-box">
+                <input
+                  type="password"
+                  id="current_password"
+                  class="input"
+                  placeholder=" "
+                />
+                <label for="current_password" class="input-label"
+                  >Current Password</label
+                >
+              </div>
+              <span>
+                <p class="mark">!</p>
+                <p class="error-text" id="current_password_error"></p>
+              </span>
+            </div>
+            <div class="password-input">
+              <div class="input-box">
+                <input
+                  type="password"
+                  id="change_password"
+                  class="input"
+                  placeholder=" "
+                />
+                <label for="change_password" class="input-label"
+                  >New Password</label
+                >
+              </div>
+              <span>
+                <p class="mark">!</p>
+                <p class="error-text" id="change_password_error"></p>
+              </span>
+            </div>
+            <div class="password-input">
+              <div class="input-box">
+                <input
+                  type="password"
+                  id="conchange_password"
+                  class="input"
+                  placeholder=" "
+                />
+                <label for="conchange_password" class="input-label"
+                  >Confirm New Password</label
+                >
+              </div>
+              <span>
+                <p class="mark">!</p>
+                <p class="error-text" id="conchange_password_error"></p>
+              </span>
+            </div>
+          </div>
+          <div class="btn-group">
+            <button type="submit" id="change_submit" class="btn">SUBMIT</button>
+            <button type="submit" id="change_cancel" class="cancel-btn btn">
+              CANCEL
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="delete-account-form" style="display: none;">
+        <div class="card" id="delete_account_card">
+          <h1>Delete Account</h1>
+          <div class="btn-group">
+            <button type="submit" id="delete_confirm" class="btn">
+              CONFIRM
+            </button>
+            <button type="submit" id="delete_cancel" class="cancel-btn btn">
+              CANCEL
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="success-form" style="display: none;">
+        <div class="card" id="success_card">
+          <h1 id="success_text">Success text</h1>
+          <button type="submit" id="success_continue" class="btn">
+            CONTINUE
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <script src="{% static 'IFRI_comotorage/script2.js' %}"></script>
+  </body>
+</html>

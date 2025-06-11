@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFRI_comotorage</title>
+    <link rel="shortcut icon" href="Asset/ressources/Images/car.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins&family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'IFRI_comotorage/styles2.css' %}">
+</head>
+<body>
+
+    <section class="Rechercher">
+        <section class="sec11">
+            <i class="fas fa-arrow-left"></i>
+            <h1>Rechercher</h1>
+            <i class="fas fa-ellipsis-v"></i>
+        </section>
+
+        <section id="map" class="sec21"></section>
+
+        <section class="sec31">
+            <h3>Localisation</h3>
+            <div>
+                <input type="text" id="search" name="Recherche" placeholder="Rechercher un lieu...">
+                <i id="search_barre" onclick="geocode()" class="fas fa-search"></i>
+            </div>
+        </section>
+
+        <section class="sec41" id="searchResults"></section>
+        
+    </section>
+
+    <span id="span">
+        <i class="fas fa-angle-right"></i> 
+    </span>
+
+    <footer id="footer">
+        <a href="{% url 'Accueil' %}"><i class="fas fa-home"></i>Accueil</a>
+        <a href="{% url 'Rechercher' %}"><i class="fas fa-search"></i>Rechercher</a>
+        <a href="{% url 'Publier' %}"><i class="fas fa-plus-circle"></i>Publier</a>
+        <a href="{% url 'Messagerie' %}"><i class="fas fa-comment-alt"></i>Messagerie</a>
+        <a href="{% url 'Profil' %}"><i class="fas fa-user"></i>Profil</a>
+    </footer>
+    
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="{% static 'IFRI_comotorage/script.js' %}"></script>
+    <script src="{% static 'IFRI_comotorage/script4.js' %}"></script>
+
+</body>
+</html> 

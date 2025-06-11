@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFRI_comotorage - Messagerie</title> {# Changed title for clarity #}
+    <link rel="shortcut icon" href="Asset/ressources/Images/car.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins&family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'IFRI_comotorage/styles2.css' %}">
+</head>
+<body>
+
+    <section class="Profil">
+        <section class="sec11">
+            <i class="fas fa-arrow-left"></i>
+            <h1>Messagerie</h1>
+            <i class="fas fa"></i>
+        </section>
+    </section>
+
+    <section class="messenger">
+        {% if request.user.is_authenticated %}
+        <center> Logout from chat <a href="{% url 'index' %}">Logout</a></center>
+        {% else %}
+        <center> Vous êtes connecté en tant qu'invité. </center>
+        {% endif %}
+
+        <div class="chat__item__container" id="id_chat_item_container" style="font-size: 20px"></div>
+
+        <div class="chat-input-area">
+            <input type="text" id="id_message_send_input" placeholder="Type your message..." />
+            <button type="submit" id="id_message_send_button"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </section>
+
+    <span id="span">
+        <i class="fas fa-angle-right"></i>
+    </span>
+
+    <footer id="footer">
+        <a href="{% url 'Accueil' %}"><i class="fas fa-home"></i>Accueil</a>
+        <a href="{% url 'Rechercher' %}"><i class="fas fa-search"></i>Rechercher</a>
+        <a href="{% url 'Publier' %}"><i class="fas fa-plus-circle"></i>Publier</a>
+        <a href="{% url 'Messagerie' %}"><i class="fas fa-comment-alt"></i>Messagerie</a>
+        <a href="{% url 'Profil' %}"><i class="fas fa-user"></i>Profil</a>
+    </footer>
+
+    <body data-username="{{ request.user.username|default:'Anonyme'|escapejs }}">
+    <script src="{% static 'IFRI_comotorage/script4.js' %}"></script>
+
+</body>
+</html>
