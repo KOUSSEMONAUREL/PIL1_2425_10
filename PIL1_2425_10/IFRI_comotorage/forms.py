@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import UserProfile
+from .models import UserProfile, RideOffer # Import RideOffer
+from django.forms import formset_factory # Import formset_factory
 
 class LoginForm(forms.Form):
     username = forms.CharField(
@@ -120,3 +121,32 @@ class UserUpdateForm(forms.ModelForm):
                 'class': 'form-control'
             })
         }
+        
+        
+class RideOfferForm(forms.ModelForm):
+    class Meta:
+        model = RideOffer
+        fields = ['departure_location', 'arrival_location', 'departure_time', 'available_seats']
+        widgets = {
+            'departure_location': forms.TextInput(attrs={
+                'placeholder': 'Adresse de Départ',
+                'class': 'input ride-input'
+            }),
+            'arrival_location': forms.TextInput(attrs={
+                'placeholder': 'Adresse d\'Arrivée',
+                'class': 'input ride-input'
+            }),
+            'departure_time': forms.TimeInput(attrs={
+                'type': 'time',
+                'class': 'input ride-input'
+            }),
+            'available_seats': forms.NumberInput(attrs={
+                'placeholder': 'Places Disponibles',
+                'min': '1',
+                'class': 'input ride-input'
+            }),
+        }
+
+# Create a formset for RideOfferForm. Extra=1 means one empty form initially.
+# You can set max_num to limit the number of forms a user can add.
+RideOfferFormSet = formset_factory(RideOfferForm, extra=1, can_delete=True)

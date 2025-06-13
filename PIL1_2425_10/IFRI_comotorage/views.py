@@ -1,13 +1,17 @@
+# views.py
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from .models import Location, UserProfile
+from .models import Location, UserProfile, RideOffer
 import json
 from . import forms
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
-from .forms import RegisterForm, UserProfileForm, UserUpdateForm
+# Import the new RideOfferFormSet
+from .forms import RegisterForm, UserProfileForm, UserUpdateForm, RideOfferFormSet
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils import timezone
+
 
 def index(request):
     return render(request, 'IFRI_comotorage/index.html')
@@ -81,8 +85,50 @@ def user_logout(request):
 def Rechercher(request):
     return render(request, 'IFRI_comotorage/Rechercher.html')
 
+
+@login_required
 def Publier(request):
-    return render(request, 'IFRI_comotorage/Publier.html')
+    if request.user.userprofile.type_utilisateur != 'conducteur':
+        messages.warning(request, "Seuls les conducteurs peuvent publier des offres de trajets. Veuillez mettre à jour votre profil.")
+        return redirect('profile_config')
+
+    # Initialize a list to hold successfully published rides for display
+    published_rides_summary = []
+
+    if request.method == 'POST':
+        formset = RideOfferFormSet(request.POST, prefix='ride') # Use a prefix
+        if formset.is_valid():
+            for form in formset:
+                # Check if the form is not marked for deletion and has data
+                if form.cleaned_data and not form.cleaned_data.get('DELETE'):
+                    try:
+                        ride_offer = form.save(commit=False) # Don't save yet
+                        ride_offer.driver = request.user # Assign the current user as the driver
+                        ride_offer.save() # Now save
+                        published_rides_summary.append(ride_offer) # Add to summary list
+                    except Exception as e:
+                        messages.error(request, f"Erreur lors de l'enregistrement d'un trajet: {e}")
+            
+            if published_rides_summary:
+                messages.success(request, "Vos trajets ont été publiés avec succès!")
+                # After successful publication, re-initialize an empty formset for new additions
+                formset = RideOfferFormSet(prefix='ride') 
+            else:
+                messages.info(request, "Aucun nouveau trajet n'a été enregistré.")
+        else:
+            # If formset is not valid, messages will be displayed for each form's errors
+            messages.error(request, "Veuillez corriger les erreurs dans le formulaire.")
+            # The formset with errors will be passed to the template automatically
+            
+    else: # GET request
+        formset = RideOfferFormSet(prefix='ride') # Initial empty formset
+
+    context = {
+        'formset': formset,
+        'published_rides_summary': published_rides_summary, # Pass the list of published rides
+    }
+    return render(request, 'IFRI_comotorage/Publier.html', context)
+
 
 def Messagerie(request, *args, **kwargs):
     return render(request, "IFRI_comotorage/Messagerie.html", context={})

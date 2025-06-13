@@ -1,52 +1,280 @@
-<!DOCTYPE html>
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFRI_comotorage</title>
-    <link rel="shortcut icon" href="Asset/ressources/Images/car.png" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins&family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>IFRI_Comotorage - Publier un Trajet</title>
+    <link rel="shortcut icon" href="{% static 'IFRI_comotorage/images/car.png' %}" type="image/x-icon">
+    <link href="[https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins&family=Roboto&display=swap](https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins&family=Roboto&display=swap)" rel="stylesheet">
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css)">
     <link rel="stylesheet" href="{% static 'IFRI_comotorage/styles2.css' %}">
+    <style>
+        /* General styling for sections */
+        .publish-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            position: relative; /* Needed for delete button positioning */
+        }
+
+        .publish-section h2 {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .publish-section .input { /* Using .input as defined in forms.py widgets */
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            box-sizing: border-box; /* Include padding in width */
+        }
+
+        .publish-section .input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        /* Specific section styling */
+        .Publier .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .Publier .header h1 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .Publier .header i {
+            font-size: 1.2em;
+            color: #007bff;
+            cursor: pointer;
+        }
+
+        .Publier .form-container {
+            padding: 0 15px;
+        }
+
+        .Publier button[type="submit"] {
+            display: block;
+            width: 90%; /* Adjusted width */
+            margin: 20px auto; /* Centered with auto margins */
+            padding: 15px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        .Publier button[type="submit"]:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .message-box {
+            background-color: #ffe0b2; /* Light orange for warning */
+            color: #e65100; /* Darker orange for text */
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 15px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(255, 160, 0, 0.2);
+        }
+
+        /* Styling for the published ride summary */
+        .published-rides-list {
+            padding: 0 15px;
+            margin-bottom: 20px;
+        }
+
+        .published-ride-item {
+            background-color: #e6f7ff; /* Light blue */
+            border: 1px solid #91d5ff; /* Slightly darker blue border */
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.1);
+        }
+
+        .published-ride-item h3 {
+            color: #0056b3;
+            font-size: 1.2em;
+            margin-top: 0;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #b3e0ff;
+            padding-bottom: 5px;
+        }
+
+        .published-ride-item p {
+            font-size: 1em;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .published-ride-item p strong {
+            color: #007bff;
+        }
+
+        .add-ride-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 90%;
+            margin: 20px auto;
+            padding: 15px 20px;
+            background-color: #28a745; /* Green for add */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .add-ride-btn i {
+            margin-right: 10px;
+        }
+
+        .add-ride-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .delete-form-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #dc3545; /* Red for delete */
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .delete-form-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Error message styling for forms */
+        .errorlist {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            list-style-type: none;
+            padding-left: 0;
+        }
+    </style>
 </head>
 <body>
 
     <section class="Publier">
-        <section class="sec11">
-            <i class="fas fa-arrow-left"></i>
-            <h1>Publier</h1>
+        <section class="header">
+            <i class="fas fa-arrow-left" onclick="window.history.back()"></i>
+            <h1>Publier un Trajet</h1>
             <i class="fas fa-ellipsis-v"></i>
         </section>
 
-        <section class="sec31" id="Pub1">
-            <h2>Adresse</h2>
-            <div>
-                <input type="text" name="Publier1" placeholder="Départ">
-            </div>
-            <div>
-                <input type="text" name="Publier2" placeholder="Arrivée">
-            </div>
-        </section>
+        {% if user.is_authenticated and user.userprofile.type_utilisateur == 'conducteur' %}
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
 
-        <section class="sec31">
-            <h2>Heure de départ</h2>
-            <div>
-                <input type="time" name="Publier3" placeholder="00h:00min">
-            </div>
-        </section> 
-        
-        <section class="sec31">
-            <h2>Places disponibles</h2>
-            <div>
-                <input type="number" name="Publier4" placeholder="0">
-            </div>
-        </section> 
+            {% if published_rides_summary %}
+                <div class="published-rides-list">
+                    <h2>Trajets Publiés :</h2>
+                    {% for ride in published_rides_summary %}
+                        <div class="published-ride-item">
+                            <h3>Trajet #{{ forloop.counter }}</h3>
+                            <p>Départ : <strong>{{ ride.departure_location }}</strong></p>
+                            <p>Arrivée : <strong>{{ ride.arrival_location }}</strong></p>
+                            <p>Heure : <strong>{{ ride.departure_time|time:"H:i" }}</strong></p>
+                            <p>Places disponibles : <strong>{{ ride.available_seats }}</strong></p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
 
-        <div>
-            <button>Publier</button>
-        </div>
-    </section>  
+            <form method="post" id="ride-formset-container" class="form-container">
+                {% csrf_token %}
+                {{ formset.management_form }}
+                <div id="forms-wrapper">
+                    {% for form in formset %}
+                        <section class="publish-section ride-form-block" id="ride-form-{{ forloop.counter0 }}">
+                            {% if formset.can_delete %}
+                                {% if form.instance.pk %} {# Only show delete for existing forms if you were editing #}
+                                    <button type="button" class="delete-form-button" onclick="deleteForm(this)">
+                                        <i class="fas fa-times-circle"></i>
+                                    </button>
+                                {% elif forloop.counter0 > 0 %} {# Always allow deleting newly added empty forms #}
+                                    <button type="button" class="delete-form-button" onclick="deleteForm(this)">
+                                        <i class="fas fa-times-circle"></i>
+                                    </button>
+                                {% endif %}
+                                {{ form.DELETE }}
+                            {% endif %}
+                            <h2>Nouveau Trajet {% if not forloop.first %}#{{ forloop.counter }}{% endif %}</h2>
+                            <div>
+                                {{ form.departure_location.errors }}
+                                {{ form.departure_location }}
+                            </div>
+                            <div>
+                                {{ form.arrival_location.errors }}
+                                {{ form.arrival_location }}
+                            </div>
+                            <div>
+                                {{ form.departure_time.errors }}
+                                {{ form.departure_time }}
+                            </div>
+                            <div>
+                                {{ form.available_seats.errors }}
+                                {{ form.available_seats }}
+                            </div>
+                        </section>
+                    {% endfor %}
+                </div>
+                
+                <button type="button" id="add-more-rides" class="add-ride-btn">
+                    <i class="fas fa-plus-circle"></i> Ajouter un autre trajet
+                </button>
+
+                <button type="submit">Publier tous les trajets</button>
+            </form>
+        {% else %}
+            <div class="message-box">
+                <p>Seuls les utilisateurs de type "Conducteur" peuvent publier des offres de trajets.</p>
+                <p>Veuillez mettre à jour votre profil pour devenir conducteur ou contacter l'administrateur.</p>
+                <a href="{% url 'profile_config' %}" style="color: #007bff; text-decoration: none; font-weight: normal;">Configurer mon profil</a>
+            </div>
+        {% endif %}
+    </section>
 
     <span id="span">
         <i class="fas fa-angle-right"></i> 
@@ -55,12 +283,110 @@
     <footer id="footer">
         <a href="{% url 'Accueil' %}"><i class="fas fa-home"></i>Accueil</a>
         <a href="{% url 'Rechercher' %}"><i class="fas fa-search"></i>Rechercher</a>
-        <a href="{% url 'Publier' %}"><i class="fas fa-plus-circle"></i>Publier</a>
+        <a href="{% url 'Publier' %}" class="active"><i class="fas fa-plus-circle"></i>Publier</a>
         <a href="{% url 'Messagerie' %}"><i class="fas fa-comment-alt"></i>Messagerie</a>
         <a href="{% url 'Profil' %}"><i class="fas fa-user"></i>Profil</a>
     </footer>
 
-     <script src="{% static 'IFRI_comotorage/script4.js' %}"></script>
+    <script src="{% static 'IFRI_comotorage/script4.js' %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addMoreButton = document.getElementById('add-more-rides');
+            const formsWrapper = document.getElementById('forms-wrapper');
+            const totalForms = document.querySelector('#id_ride-TOTAL_FORMS');
+            const formTemplate = document.querySelector('.ride-form-block').cloneNode(true); // Clone the first form as a template
 
+            // Remove initial data from the cloned template
+            formTemplate.querySelectorAll('input').forEach(input => {
+                if (input.type !== 'hidden') { // Don't clear management form inputs
+                    input.value = '';
+                }
+                input.id = ''; // Clear IDs to avoid duplicates
+                input.name = ''; // Clear names
+            });
+            // Remove error messages from template
+            formTemplate.querySelectorAll('.errorlist').forEach(error => error.remove());
+            // Remove delete button from the first template (it will be added dynamically)
+            const templateDeleteButton = formTemplate.querySelector('.delete-form-button');
+            if (templateDeleteButton) {
+                templateDeleteButton.remove();
+            }
+
+            addMoreButton.addEventListener('click', function() {
+                const currentForms = formsWrapper.querySelectorAll('.ride-form-block').length;
+                const newFormIndex = totalForms.value; // Use the current TOTAL_FORMS value as the new index
+
+                const newForm = formTemplate.cloneNode(true);
+                newForm.id = `ride-form-${newFormIndex}`;
+
+                // Update names and IDs for the new form
+                newForm.innerHTML = newForm.innerHTML.replace(/__prefix__/g, newFormIndex);
+                newForm.innerHTML = newForm.innerHTML.replace(/Nouveau Trajet\s#\d*/g, `Nouveau Trajet #${parseInt(newFormIndex) + 1}`);
+
+                // Add a delete button to the new form
+                const deleteButton = document.createElement('button');
+                deleteButton.setAttribute('type', 'button');
+                deleteButton.classList.add('delete-form-button');
+                deleteButton.innerHTML = '<i class="fas fa-times-circle"></i>';
+                deleteButton.onclick = function() { deleteForm(this); };
+                newForm.prepend(deleteButton);
+
+                // Add hidden delete input for the new form
+                const deleteInput = document.createElement('input');
+                deleteInput.setAttribute('type', 'checkbox');
+                deleteInput.setAttribute('name', `ride-${newFormIndex}-DELETE`);
+                deleteInput.setAttribute('id', `id_ride-${newFormIndex}-DELETE`);
+                deleteInput.style.display = 'none'; // Keep it hidden
+                newForm.appendChild(deleteInput);
+
+
+                formsWrapper.appendChild(newForm);
+
+                totalForms.value = parseInt(totalForms.value) + 1; // Increment TOTAL_FORMS
+            });
+
+            window.deleteForm = function(button) {
+                const formBlock = button.closest('.ride-form-block');
+                const formIndex = formBlock.id.split('-')[2];
+                const deleteInput = document.getElementById(`id_ride-${formIndex}-DELETE`);
+                
+                if (deleteInput) {
+                    deleteInput.checked = true; // Mark for deletion
+                    formBlock.style.display = 'none'; // Hide the form visually
+                    // You might want to adjust TOTAL_FORMS or MIN_NUM_FORMS here
+                    // However, Django formsets are generally robust enough to handle hidden forms
+                    // as long as the DELETE checkbox is correctly set.
+                } else {
+                    // For forms that don't have a hidden DELETE input (e.g., initial empty forms
+                    // where can_delete is true but no instance exists), just remove them.
+                    formBlock.remove();
+                    // Decrement TOTAL_FORMS if forms are truly removed, and not just hidden for deletion.
+                    // This is tricky with Django formsets, simpler to just hide and let DELETE handle it.
+                    // For truly dynamic removal that affects TOTAL_FORMS, you'd need more complex JS to re-index.
+                    // For now, hiding is simpler and sufficient for newly added blank forms.
+                    totalForms.value = parseInt(totalForms.value) - 1;
+
+                    // Re-index remaining forms (optional, but good practice for continuous addition/deletion)
+                    reindexForms();
+                }
+            };
+
+            function reindexForms() {
+                const formBlocks = formsWrapper.querySelectorAll('.ride-form-block:not([style*="display: none"])');
+                let newIndex = 0;
+                formBlocks.forEach(block => {
+                    const oldIndex = block.id.split('-')[2];
+                    if (oldIndex !== newIndex.toString()) {
+                        // Update IDs and names
+                        block.id = `ride-form-${newIndex}`;
+                        block.innerHTML = block.innerHTML.replace(new RegExp(`ride-${oldIndex}`, 'g'), `ride-${newIndex}`);
+                        block.querySelector('h2').textContent = `Nouveau Trajet #${newIndex + 1}`;
+                    }
+                    newIndex++;
+                });
+                totalForms.value = newIndex;
+            }
+        });
+    </script>
 </body>
-</html>    
+</html>
