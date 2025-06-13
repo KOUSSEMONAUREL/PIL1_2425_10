@@ -75,10 +75,15 @@ WSGI_APPLICATION = 'mon_projet.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'IFRI_COMOTORAGE',
+        'USER': 'root',
+        'PASSWORD': 'prim_@rc2008',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
+
 
 
 # Password validation
@@ -126,3 +131,11 @@ import os
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# Configuration pour Gmail
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'primaelhouannou@gmail.com'
+EMAIL_HOST_PASSWORD = 'hlrq giss wspq hldl'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

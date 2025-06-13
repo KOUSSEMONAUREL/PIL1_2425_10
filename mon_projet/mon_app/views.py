@@ -141,5 +141,31 @@ def chat_with_user_view(request, uid):
         'messages': messages_qs,
         'form': form
     })
+from django.contrib.auth.views import PasswordResetView
+from django.urls import reverse_lazy
+from django.contrib import messages
+
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'mon_app/password_reset.html'
+    email_template_name = 'mon_app/password_reset_email.html'
+    subject_template_name = 'mon_app/password_reset_subject.txt'
+    success_url = reverse_lazy('password_reset_done')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Un e-mail vous a été envoyé avec les instructions.")
+        return super().form_valid(form)
+from django.contrib.auth.views import PasswordResetDoneView
+
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'mon_app/password_reset_done.html'
+from django.contrib.auth.views import PasswordResetConfirmView
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'mon_app/password_reset_confirm.html'
+    success_url = reverse_lazy('password_reset_complete')
+from django.contrib.auth.views import PasswordResetCompleteView
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'mon_app/password_reset_complete.html'
 
 
