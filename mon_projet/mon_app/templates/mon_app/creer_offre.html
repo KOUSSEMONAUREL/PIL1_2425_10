@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Publier une offre - IFRI Covoiturage</title>
+  <link rel="stylesheet" href="{% static 'mon_app/style.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <header>
+    <div class="logo">🚗 IFRI Comotorage</div>
+    <nav>
+      <ul>
+        <li><a href="{% url 'home' %}">Accueil</a></li>
+        <li><a href="{% url 'list_offers' %}">Rechercher</a></li>
+        <li><a href="{% url 'creer_offre' %}">Publier</a></li>
+        <li><a href="{% url 'conversations_box' %}">Messagerie</a></li>
+        <li><a href="{% url 'profil' %}">Profil</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="publier">
+      <h2>Publier une nouvelle offre</h2>
+
+      <form method="post">
+        <form method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+
+          <button type="submit">Publier l’offre</button>
+        </form>
+
+        <h3>Choisissez l'emplacement sur la carte</h3>
+        <div id="map" style="height: 300px;"></div>
+        <button type="submit">Publier l’offre</button>
+      </form>
+    </section>
+  </main>
+  <button type="button" onclick="getLocation()">📍 Utiliser ma position</button>
+<input type="text" id="depart" name="depart" placeholder="Adresse de départ">
+
+<script>
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition, showError);
+  } else {
+    alert("La géolocalisation n'est pas supportée.");
+  }
+}
+
+function showPosition(position) {
+  const lat = position.coords.latitude;
+  const lon = position.coords.longitude;
+
+  fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById("depart").value = data.display_name;
+    });
+}
+
+function showError(error) {
+  alert("Erreur de localisation");
+}
+</script>
+<!-- Inclure la librairie Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<script>
+  var map = L.map('map').setView([6.3703, 2.3912], 13); // Coordonnées de départ (ex : Cotonou)
+  
+  // Ajouter le fond de carte avec OpenStreetMap
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  // Ajouter un marker où l'utilisateur peut cliquer pour choisir la localisation
+  var marker = L.marker([6.3703, 2.3912]).addTo(map); // Position initiale (Cotonou)
+
+  // Mise à jour de la position du marker et du champ d'adresse lors d'un clic
+  map.on('click', function(e) {
+    marker.setLatLng(e.latlng);  // Déplacer le marker
+    document.getElementById('depart').value = e.latlng.lat + ', ' + e.latlng.lng;  // Remplir le champ "Départ" avec les coordonnées
+  });
+</script>
+<footer>
+  <p>&copy; 2025 IFRI Covoiturage</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publier une offre - IFRI Covoiturage</title>
+  <link rel="stylesheet" href="{% static 'mon_app/style.css' %}">
+</head>
+<body>
+  <header>
+    <div class="logo">🚗 IFRI Comotorage</div>
+    <nav>
+      <ul>
+        <li><a href="{% url 'home' %}">Accueil</a></li>
+        <li><a href="{% url 'list_offers' %}">Rechercher</a></li>
+        <li><a href="{% url 'creer_offre' %}">Publier</a></li>
+        <li><a href="{% url 'conversations_box' %}">Messagerie</a></li>
+        <li><a href="{% url 'profil' %}">Profil</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="publier">
+      <h2>Publier une nouvelle offre</h2>
+
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Publier l’offre</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

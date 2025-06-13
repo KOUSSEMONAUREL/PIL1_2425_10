@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Discussion avec {{ contact.username }} - IFRI Covoiturage</title>
+  <link rel="stylesheet" href="{% static 'mon_app/style.css' %}">
+</head>
+<body>
+  <header>
+    <h2>💬 Discussion avec {{ contact.first_name }} {{ contact.last_name }}</h2>
+    <a href="{% url 'conversations_box' %}">⬅️ Retour aux messages</a>
+  </header>
+
+  <main>
+    <div class="messages">
+      {% for msg in messages %}
+        <div class="{% if msg.sender == request.user %}sent{% else %}received{% endif %}">
+          <p><strong>{{ msg.sender.username }} :</strong> {{ msg.content }}</p>
+          <span>{{ msg.timestamp|date:"d M Y H:i" }}</span>
+        </div>
+      {% endfor %}
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Envoyer</button>
+    </form>
+  </main>
+</body>
+</html>
