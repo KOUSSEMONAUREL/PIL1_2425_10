@@ -1,5 +1,4 @@
 body {
-    overflow: hidden;
     background-color: white;
     font-family: 'Roboto', sans-serif;
     margin: 0;
@@ -293,7 +292,7 @@ input {
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    background-color: darkslategray;
+    border: 1px solid blue;
 }
 
 .sec51 h2 {

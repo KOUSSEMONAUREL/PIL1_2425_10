@@ -11,5 +11,6 @@ urlpatterns = [
     path('Publier/', views.Publier, name='Publier'),
     path('Messagerie/', views.Messagerie, name='Messagerie'),
     path('Profil/', views.Profil, name='Profil'),
+    path('profil/config/', views.profile_config, name='profile_config'),
     path('save_location/', views.save_location, name='save_location'),
 ]

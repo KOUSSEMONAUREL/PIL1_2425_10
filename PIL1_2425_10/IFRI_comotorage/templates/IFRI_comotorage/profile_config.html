@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFRI_comotorage - Configuration du Profil</title>
+    <link rel="shortcut icon" href="{% static 'IFRI_comotorage/images/car.png' %}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins&family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'IFRI_comotorage/styles2.css' %}">
+    <style>
+        .config-form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .form-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .form-section h3 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        
+        .photo-preview {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        
+        .current-photo {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <section class="Profil">
+        <section class="sec11">
+            <a href="{% url 'Profil' %}">
+                <i class="fas fa-arrow-left" style="cursor: pointer;"></i>
+            </a>
+            <h1>Configuration du Profil</h1>
+            <i class="fas fa"></i>
+        </section>
+
+        <div class="config-form">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Section Informations personnelles -->
+                <div class="form-section">
+                    <h3><i class="fas fa-user"></i> Informations personnelles</h3>
+                    
+                    <div class="form-group">
+                        <label for="{{ user_form.first_name.id_for_label }}">Prénom</label>
+                        {{ user_form.first_name }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ user_form.last_name.id_for_label }}">Nom</label>
+                        {{ user_form.last_name }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ user_form.email.id_for_label }}">Email</label>
+                        {{ user_form.email }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ profile_form.telephone.id_for_label }}">Téléphone</label>
+                        {{ profile_form.telephone }}
+                    </div>
+                </div>
+
+                <!-- Section Photo de profil -->
+                <div class="form-section">
+                    <h3><i class="fas fa-camera"></i> Photo de profil</h3>
+                    
+                    {% if profile.photo_profil %}
+                        <div class="current-photo">
+                            <img src="{{ profile.photo_profil.url }}" alt="Photo actuelle" class="photo-preview">
+                            <p style="font-size: 0.9em; color: #666;">Photo actuelle</p>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="form-group">
+                        <label for="{{ profile_form.photo_profil.id_for_label }}">
+                            {% if profile.photo_profil %}Changer la photo{% else %}Ajouter une photo{% endif %}
+                        </label>
+                        {{ profile_form.photo_profil }}
+                    </div>
+                </div>
+
+                <!-- Section Préférences de covoiturage -->
+                <div class="form-section">
+                    <h3><i class="fas fa-car"></i> Préférences de covoiturage</h3>
+                    
+                    <div class="form-group">
+                        <label for="{{ profile_form.type_utilisateur.id_for_label }}">Type d'utilisateur</label>
+                        {{ profile_form.type_utilisateur }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ profile_form.adresse_depart.id_for_label }}">Adresse de départ habituelle</label>
+                        {{ profile_form.adresse_depart }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ profile_form.horaire_debut.id_for_label }}">Horaire de début habituel</label>
+                        {{ profile_form.horaire_debut }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ profile_form.horaire_fin.id_for_label }}">Horaire de fin habituel</label>
+                        {{ profile_form.horaire_fin }}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ profile_form.nombre_places.id_for_label }}">Nombre de places disponibles</label>
+                        {{ profile_form.nombre_places }}
+                        <small style="color: #666; display: block; margin-top: 5px;">
+                            Ne concerne que les conducteurs
+                        </small>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                    <a href="{% url 'Profil' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <footer id="footer">
+        <a href="{% url 'Accueil' %}"><i class="fas fa-home"></i>Accueil</a>
+        <a href="{% url 'Rechercher' %}"><i class="fas fa-search"></i>Rechercher</a>
+        <a href="{% url 'Publier' %}"><i class="fas fa-plus-circle"></i>Publier</a>
+        <a href="{% url 'Messagerie' %}"><i class="fas fa-comment-alt"></i>Messagerie</a>
+        <a href="{% url 'Profil' %}" class="active"><i class="fas fa-user"></i>Profil</a>
+    </footer>
+</body>
+</html>

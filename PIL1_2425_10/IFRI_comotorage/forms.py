@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import UserProfile
 
 class LoginForm(forms.Form):
     username = forms.CharField(
@@ -42,19 +43,16 @@ class RegisterForm(UserCreationForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Configuration du champ username
         self.fields['username'].widget.attrs.update({
             'class': 'input',
             'placeholder': ' ',
             'id': 'username'
         })
-        # Configuration du champ password1 (mot de passe)
         self.fields['password1'].widget.attrs.update({
             'class': 'input',
             'placeholder': ' ',
             'id': 'reg_password'
         })
-        # Configuration du champ password2 (confirmation)
         self.fields['password2'].widget.attrs.update({
             'class': 'input',
             'placeholder': ' ',
@@ -67,3 +65,58 @@ class RegisterForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['adresse_depart', 'horaire_debut', 'horaire_fin', 'nombre_places', 'photo_profil', 'type_utilisateur', 'telephone']
+        widgets = {
+            'adresse_depart': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Votre adresse de départ habituelle'
+            }),
+            'horaire_debut': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time'
+            }),
+            'horaire_fin': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time'
+            }),
+            'nombre_places': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'min': '1',
+                'max': '8'
+            }),
+            'photo_profil': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*'
+            }),
+            'type_utilisateur': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'telephone': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '+229 XX XX XX XX'
+            })
+        }
+
+class UserUpdateForm(forms.ModelForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+        widgets = {
+            'first_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Prénom'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Nom'
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control'
+            })
+        }
