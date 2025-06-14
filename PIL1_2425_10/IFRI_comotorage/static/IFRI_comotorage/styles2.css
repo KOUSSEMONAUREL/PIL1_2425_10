@@ -128,55 +128,6 @@ body {
 
 /* Publier */
 
-.Publier {
-    height: 90vh;
-    width: 100vw;
-}
-
-.Publier div {
-    display: flex;
-    flex-direction: column;
-}
-
-.Publier button {
-    background-color: #096de7;
-    border: none;
-    color: white;
-    width: 75vw;
-    height: 4vh;
-    padding: 15px;
-    border-radius: 5px;
-    margin-top: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#Pub1 {
-    gap: 5px;
-    margin-top: 20px;
-}
-
-.Publier > div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.sec31 div {
-    width: 90vw;
-    height: 6vh;
-}
-
-.sec31 input {
-    width: 80vw;
-    height: 6vh;
-}
-
-input {
-    font-size: 15px;
-}
-
 /* Messagerie */
 
 .messenger {
