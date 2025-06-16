@@ -48,8 +48,8 @@ Permettre aux étudiants de proposer ou de rechercher des trajets partagés, gr�
 | Composant            | Technologies                                                   |
 | -------------------- | -------------------------------------------------------------- |
 | Frontend             | HTML, CSS, JavaScript*(+ Bootstrap ou Tailwind selon choix)* |
-| Backend              | Python (Django ou Flask uniquement)                            |
-| Base de données     | MySQL ou PostgreSQL                                            |
+| Backend              | Python (Django)                            |
+| Base de données     | MySQL                                            |
 | Contrôle de version | Git + GitHub                                                   |
 
 ---
