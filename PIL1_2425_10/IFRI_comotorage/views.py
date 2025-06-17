@@ -1,4 +1,3 @@
-# IFRI_comotorage/views.py
 import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
@@ -6,26 +5,30 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
-from django.db import transaction # Import transaction pour les opérations atomiques
-# Import de toutes les classes de formulaire directement
-from .forms import RegisterForm, LoginForm, UserProfileForm, UserUpdateForm, RideOfferFormSet
-from .models import Location, UserProfile, RideOffer, RideRequest, RideChat, ChatMessage # Import des nouveaux modèles
+from django.db import transaction 
+from django.db import models
+from .forms import RegisterForm, LoginForm, UserProfileForm, UserUpdateForm, RideOfferFormSet, RechercheForm
+from .models import Location, UserProfile, RideOffer, RideRequest, RideChat, ChatMessage
 from django.db.models import F
 from django.db.models import Q
-from math import radians, sin, cos, sqrt, atan2
+import math
 from django.utils import timezone
+from datetime import datetime, time, date
 
-# Fonction utilitaire pour la distance de Haversine (recherche de proximité simple)
+# Fonction de calcul de distance Haversine
 def haversine_distance(lat1, lon1, lat2, lon2):
     R = 6371  # Rayon de la Terre en kilomètres
 
-    lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
+    lat1_rad = math.radians(lat1)
+    lon1_rad = math.radians(lon1)
+    lat2_rad = math.radians(lat2)
+    lon2_rad = math.radians(lon2)
 
-    dlon = lon2 - lon1
-    dlat = lat2 - lat1
+    dlat = lat2_rad - lat1_rad
+    dlon = lon2_rad - lon1_rad
 
-    a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
-    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+    a = math.sin(dlat / 2)**2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(dlon / 2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
     distance = R * c
     return distance
@@ -34,34 +37,26 @@ def index(request):
     return render(request, 'IFRI_comotorage/index.html')
 
 def Login(request):
-    # Instancier les formulaires directement en utilisant leurs noms de classe
     form = LoginForm()
     reg_form = RegisterForm()
     message = ''
 
     if request.method == 'POST':
-        form = LoginForm(request.POST) # Utiliser LoginForm directement
+        form = LoginForm(request.POST)
         if form.is_valid():
             username_or_email = form.cleaned_data['username']
             password = form.cleaned_data['password']
 
             user = authenticate(request, username=username_or_email, password=password)
 
-            if user is None:
-                try:
-                    user_obj = User.objects.get(email=username_or_email)
-                    user = authenticate(request, username=user_obj.username, password=password)
-                except User.DoesNotExist:
-                    pass
-
             if user is not None:
                 login(request, user)
-                message = f'Bonjour, {user.username}! Vous êtes connecté.'
+                messages.success(request, f'Bonjour, {user.username}! Vous êtes connecté.')
                 return redirect('Accueil')
             else:
-                message = 'Identifiants invalides.'
+                messages.error(request, 'Identifiants invalides.')
         else:
-            message = 'Erreur de validation du formulaire.'
+            messages.error(request, 'Erreur de validation du formulaire.')
 
     return render(request, 'IFRI_comotorage/Login.html', context={
         'form': form,
@@ -71,22 +66,23 @@ def Login(request):
 
 def register(request):
     if request.method == 'POST':
-        form = RegisterForm(request.POST) # Utiliser RegisterForm directement
-        login_form = LoginForm() # Utiliser LoginForm directement
+        form = RegisterForm(request.POST)
+        login_form = LoginForm()
 
         if form.is_valid():
             user = form.save()
             login(request, user)
+            messages.success(request, "Inscription réussie et connexion automatique !")
             return redirect('Accueil')
         else:
+            messages.error(request, "Erreur lors de l'inscription. Veuillez corriger les champs.")
             return render(request, 'IFRI_comotorage/Login.html', {
                 'reg_form': form,
                 'form': login_form,
-                'message': 'Erreur lors de l\'inscription.'
             })
     else:
-        form = RegisterForm() # Utiliser RegisterForm directement
-        login_form = LoginForm() # Utiliser LoginForm directement
+        form = RegisterForm()
+        login_form = LoginForm()
 
     return render(request, 'IFRI_comotorage/Login.html', {
         'reg_form': form,
@@ -95,6 +91,7 @@ def register(request):
 
 def user_logout(request):
     logout(request)
+    messages.info(request, "Vous avez été déconnecté.")
     return redirect('Login')
 
 @login_required
@@ -103,45 +100,76 @@ def Accueil(request):
 
 @login_required
 def Rechercher(request):
-    search_query = request.GET.get('search', '').strip().lower()
+    rides = RideOffer.objects.all()
+    form = RechercheForm(request.GET or None)
+    
+    search_radius_km = 10 # Rayon de recherche de 10 km
 
-    all_ride_offers = []
-    if search_query:
-        # On filtre les trajets si le champ de recherche n'est pas vide
-        all_ride_offers = RideOffer.objects.filter(
-            Q(departure_location__icontains=search_query) |
-            Q(arrival_location__icontains=search_query)
-        ).order_by('-created_at')
-        messages.info(request, f"Résultats pour : « {search_query} »")
-    else:
-        messages.info(request, "Veuillez entrer une adresse de départ ou d'arrivée.")
+    # Filtrer les trajets déjà passés (date et heure)
+    today = timezone.now().date()
+    current_time = timezone.now().time()
+    rides = rides.filter(
+        Q(departure_date__gt=today) |
+        Q(departure_date=today, departure_time__gte=current_time)
+    )
 
-    ride_offers_data = []
-    for ride in all_ride_offers:
-        # Vérifier si l'utilisateur actuel a déjà demandé ce trajet
-        has_requested = RideRequest.objects.filter(
-            ride_offer=ride,
-            passenger=request.user
-        ).exists()
+    if form.is_valid():
+        search_location_text = form.cleaned_data.get('search_location')
+        search_lat = form.cleaned_data.get('search_latitude')
+        search_lon = form.cleaned_data.get('search_longitude')
+
+        if search_location_text or (search_lat and search_lon):
+            filtered_rides = []
+            for ride in rides:
+                keep_ride = False
+                
+                # Prioriser la recherche par coordonnées GPS si disponibles
+                if search_lat and search_lon:
+                    # Vérifier si le point de départ du trajet est proche
+                    if ride.departure_latitude and ride.departure_longitude:
+                        distance_dep = haversine_distance(
+                            search_lat, search_lon,
+                            ride.departure_latitude, ride.departure_longitude
+                        )
+                        if distance_dep <= search_radius_km:
+                            keep_ride = True
+                    
+                    # Si pas encore gardé, vérifier si le point d'arrivée du trajet est proche
+                    if not keep_ride and ride.arrival_latitude and ride.arrival_longitude:
+                        distance_arr = haversine_distance(
+                            search_lat, search_lon,
+                            ride.arrival_latitude, ride.arrival_longitude
+                        )
+                        if distance_arr <= search_radius_km:
+                            keep_ride = True
+                
+                # Sinon, si seulement le texte est fourni, faire une recherche textuelle
+                elif search_location_text:
+                    if (search_location_text.lower() in ride.departure_location.lower() or
+                        search_location_text.lower() in ride.arrival_location.lower()):
+                        keep_ride = True
+                
+                if keep_ride:
+                    filtered_rides.append(ride)
+            
+            rides = filtered_rides
         
-        ride_offers_data.append({
-            'id': ride.id,
-            'driver': ride.driver.username,
-            'departure_location': ride.departure_location,
-            'departure_latitude': ride.departure_latitude,
-            'departure_longitude': ride.departure_longitude,
-            'arrival_location': ride.arrival_location,
-            'arrival_latitude': ride.arrival_latitude,
-            'arrival_longitude': ride.arrival_longitude,
-            'departure_time': ride.departure_time.strftime('%H:%M'),
-            'remaining_seats': ride.remaining_seats, # Utilisation de la propriété du modèle
-            'has_requested': has_requested,
-            'is_driver_of_this_ride': ride.driver == request.user
-        })
+        # Convertir la liste en QuerySet si nécessaire pour les filtres suivants
+        if not isinstance(rides, models.QuerySet):
+            rides = RideOffer.objects.filter(id__in=[ride.id for ride in rides])
+        
+    # Exclure les trajets du conducteur actuel
+    if request.user.is_authenticated:
+        rides = rides.exclude(driver=request.user)
+    
+    # Filtrer uniquement les trajets avec des places restantes
+    rides = rides.filter(available_seats__gt=models.F('seats_taken'))
 
     context = {
-        'ride_offers_json': json.dumps(ride_offers_data),
-        'search_query': search_query,
+        'form': form,
+        'rides': rides,
+        # 'has_searched' est vrai si au moins un champ de recherche a été rempli et est valide
+        'has_searched': request.method == 'GET' and form.is_valid() and (form.cleaned_data.get('search_location') or form.cleaned_data.get('search_latitude') is not None),
     }
     return render(request, 'IFRI_comotorage/Rechercher.html', context)
 
@@ -158,10 +186,7 @@ def Publier(request):
             newly_published_rides = []
             for form in formset:
                 if form.cleaned_data and not form.cleaned_data.get('DELETE'):
-                    if form.cleaned_data.get('departure_location') and \
-                       form.cleaned_data.get('arrival_location') and \
-                       form.cleaned_data.get('departure_time') and \
-                       form.cleaned_data.get('available_seats') is not None:
+                    if all(form.cleaned_data.get(f) is not None for f in ['departure_location', 'arrival_location', 'departure_date', 'departure_time', 'available_seats']):
                         try:
                             ride_offer = form.save(commit=False)
                             ride_offer.driver = request.user
@@ -186,7 +211,6 @@ def Publier(request):
 
     published_rides_summary = RideOffer.objects.filter(driver=request.user).order_by('-created_at')
     
-    # Obtenir les demandes en attente pour les trajets de ce conducteur
     pending_requests = RideRequest.objects.filter(
         ride_offer__driver=request.user,
         status='pending'
@@ -210,7 +234,7 @@ def request_ride(request, ride_id):
         messages.error(request, "Vous ne pouvez pas demander à rejoindre votre propre trajet.")
         return redirect('Rechercher')
 
-    if ride_offer.remaining_seats <= 0: # Utilisation de la propriété du modèle
+    if ride_offer.remaining_seats <= 0:
         messages.error(request, "Désolé, il n'y a plus de places disponibles pour ce trajet.")
         return redirect('Rechercher')
 
@@ -290,8 +314,8 @@ def approve_ride_request(request, request_id):
     if ride_request.status == 'pending':
         with transaction.atomic():
             ride_offer = ride_request.ride_offer
-            if ride_offer.remaining_seats > 0: # Utilisation de la propriété du modèle
-                ride_offer.seats_taken = F('seats_taken') + 1
+            if ride_offer.remaining_seats > 0:
+                ride_offer.seats_taken = models.F('seats_taken') + 1
                 ride_offer.save()
                 ride_request.status = 'accepted'
                 ride_request.chat_access_granted = True
@@ -337,7 +361,7 @@ def cancel_ride_request(request, request_id):
             if ride_request.status == 'accepted':
                 ride_offer = ride_request.ride_offer
                 if ride_offer.seats_taken > 0:
-                    ride_offer.seats_taken = F('seats_taken') - 1
+                    ride_offer.seats_taken = models.F('seats_taken') - 1
                     ride_offer.save()
             ride_request.status = 'cancelled'
             ride_request.chat_access_granted = False

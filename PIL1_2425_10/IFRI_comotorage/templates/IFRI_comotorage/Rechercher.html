@@ -1,45 +1,119 @@
-<!DOCTYPE html>
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFRI_comotorage</title>
-    <link rel="shortcut icon" href="Asset/ressources/Images/car.png" type="image/x-icon">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <title>IFRI_Comotorage - Rechercher un Trajet</title>
+    <link rel="shortcut icon" href="{% static 'IFRI_comotorage/images/car.png' %}" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins&family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'IFRI_comotorage/styles2.css' %}">
+    {# Styles pour Leaflet (carte interactive) #}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
-        /* Ajouter quelques styles pour le bouton de jointure */
-        .join-button {
-            background-color: #28a745; /* Vert */
-            color: white;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
+        /* Styles généraux pour les sections */
+        .search-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .search-section h2 {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .search-section .input {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        .search-section .input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        /* Styles spécifiques au formulaire de recherche */
+        .Rechercher .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .Rechercher .header h1 {
+            margin: 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .Rechercher .header i {
+            font-size: 1.2em;
+            color: #007bff;
             cursor: pointer;
-            font-size: 0.9em;
-            margin-top: 10px;
-            transition: background-color 0.3s ease;
         }
-        .join-button:hover {
-            background-color: #218838;
+
+        .Rechercher .form-container {
+            padding: 0 15px;
         }
-        .join-button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
+
+        .Rechercher button[type="submit"] {
+            display: block;
+            width: 90%;
+            margin: 20px auto;
+            padding: 15px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
         }
-        .ride-offer-item {
-            background-color: #e6f7ff; /* Bleu clair */
-            border: 1px solid #91d5ff; /* Bordure bleu légèrement plus foncée */
+
+        .Rechercher button[type="submit"]:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* Styles pour les trajets trouvés (sec41) */
+        .sec41 {
+            padding: 0 15px;
+        }
+
+        .sec41 h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .trip-item {
+            background-color: #e6f7ff;
+            border: 1px solid #91d5ff;
             border-radius: 10px;
             padding: 15px;
             margin-bottom: 15px;
-            text-align: center;
+            text-align: left;
             box-shadow: 0 4px 10px rgba(0, 123, 255, 0.1);
         }
-        .ride-offer-item h3 {
+
+        .trip-item h3 {
             color: #0056b3;
             font-size: 1.2em;
             margin-top: 0;
@@ -47,39 +121,258 @@
             border-bottom: 1px solid #b3e0ff;
             padding-bottom: 5px;
         }
-        .ride-offer-item p {
+
+        .trip-item p {
             font-size: 1em;
             color: #333;
             margin-bottom: 5px;
         }
-        .ride-offer-item p strong {
+
+        .trip-item p strong {
             color: #007bff;
         }
+
+        .trip-item .request-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .trip-item .request-button:hover {
+            background-color: #218838;
+        }
+
+        /* Styles pour le pied de page */
+        #footer {
+            display: flex;
+            justify-content: center;
+            flex-wrap: nowrap;
+            border-top: 2px solid gainsboro;
+            width: 90%;
+            gap: 15px;
+            padding-top: 10px;
+            margin-bottom: 20px;
+            z-index: 1;
+        }
+
+        #footer a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            text-decoration: none;
+            color: initial;
+            font-size: 3.9vw;
+        }
+
+        #footer a:hover {
+            color: #0467e0;
+        }
+
+        #span {
+            display: none;
+        }
+
+        /* Styles pour l'intégration de la carte (modal) */
+        .map-modal {
+            display: none; /* Caché par défaut */
+            position: fixed;
+            z-index: 1000; /* Par-dessus tout le reste */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7); /* Fond semi-transparent */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .map-modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 800px; /* Taille maximale pour la carte */
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+        }
+
+        #mapid {
+            height: 400px; /* Hauteur de la carte */
+            width: 100%;
+            margin-top: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        
+        .map-coords-display {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #555;
+            text-align: center;
+        }
+
+        .map-select-btn-confirm { /* Renommé pour éviter la confusion avec les boutons du formulaire */
+            padding: 8px 15px;
+            background-color: #17a2b8; /* Cyan */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .map-select-btn-confirm:hover {
+            background-color: #138496;
+        }
+
+        .form-row-with-map {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Espacement entre l'input et le bouton */
+            margin-bottom: 15px; /* Marge pour cette ligne de formulaire */
+        }
+        .form-row-with-map .input {
+            flex-grow: 1; /* L'input prend le reste de l'espace */
+            margin-bottom: 0; /* Réinitialiser la marge pour l'alignement */
+        }
+        .form-row-with-map button {
+            padding: 10px 12px;
+            background-color: #6c757d; /* Gris pour le bouton carte */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .form-row-with-map button:hover {
+            background-color: #5a6268;
+        }
+
+
+    @media ( min-width: 500px) {
+
+    .Rechercher {
+        width: 80vw;
+    }
+
+    #footer {
+        position: absolute;
+        justify-content: flex-start;
+        flex-direction: column;
+        border-top: none;
+        border: 2px solid rgb(246, 244, 244);
+        width: 100px;
+        border-radius: 5px;
+        gap: 30px;
+        padding-top: 0;
+        top: 25%;
+        left: -120px;
+        transition: left 0.8s ease;
+    }
+
+    #footer a {
+    color: initial;
+    font-size: 20px;
+    padding: 4px;
+}
+
+    #span {
+        background-color: rgb(242, 242, 242);
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 25px;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transition: left 0.4s ease;
+    }
+
+    #span:hover {
+        background-color: #2b84f0;
+        font-size: 30px;
+        left: 10px;
+        color: white;
+    }
+
+}
     </style>
 </head>
 <body>
 
     <section class="Rechercher">
-        <section class="sec11">
-            <i class="fas fa-arrow-left"></i>
-            <h1>Rechercher</h1>
+        <section class="header">
+            <i class="fas fa-arrow-left" onclick="window.history.back()"></i>
+            <h1>Rechercher un Trajet</h1>
             <i class="fas fa-ellipsis-v"></i>
         </section>
 
-        <section id="map" class="sec21"></section>
-
-        <section class="sec31">
-            <h3>Localisation</h3>
-            <div>
-                <input type="text" id="search" name="Recherche" placeholder="Rechercher un lieu...">
-                <i id="search_barre" onclick="geocode()" class="fas fa-search"></i>
+        <form method="get" class="form-container">
+            {% csrf_token %}
+            
+            <div class="form-row-with-map">
+                {{ form.search_location }} {# Le seul champ de recherche textuelle #}
+                <button type="button" class="map-select-btn-form">Carte</button> {# Bouton pour la carte #}
             </div>
-        </section>
+            {# Les champs cachés pour les coordonnées GPS #}
+            {{ form.search_latitude }}
+            {{ form.search_longitude }}
+            
+            {# Le champ de date a été retiré #}
 
-        <section class="sec41" id="searchResults">
-            <!-- Les offres de trajet seront affichées ici par JavaScript -->
+            <button type="submit">Rechercher</button>
+        </form>
+
+        <section class="sec41">
+            <h2>Trajets Disponibles</h2>
+            {% if has_searched and not rides %}
+                <p style="text-align: center; color: #666;">Aucun trajet trouvé pour votre recherche.</p>
+            {% elif not has_searched %}
+                <p style="text-align: center; color: #666;">Utilisez le formulaire ci-dessus pour rechercher des trajets.</p>
+            {% else %}
+                {% for ride in rides %}
+                    <div class="trip-item">
+                        <h3>De {{ ride.departure_location }} à {{ ride.arrival_location }}</h3>
+                        <p>Date: <strong>{{ ride.departure_date|date:"d/m/Y" }}</strong></p>
+                        <p>Heure: <strong>{{ ride.departure_time|time:"H:i" }}</strong></p>
+                        <p>Places restantes: <strong>{{ ride.remaining_seats }}</strong></p>
+                        <p>Conducteur: <strong>{{ ride.driver.username }}</strong></p>
+                        <form action="{% url 'request_ride' ride.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="request-button">Demander ce trajet</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            {% endif %}
         </section>
-        
     </section>
 
     <span id="span">
@@ -90,62 +383,151 @@
         <a href="{% url 'Accueil' %}"><i class="fas fa-home"></i>Accueil</a>
         <a href="{% url 'Rechercher' %}" class="active"><i class="fas fa-search"></i>Rechercher</a>
         <a href="{% url 'Publier' %}"><i class="fas fa-plus-circle"></i>Publier</a>
-        <a href="{% url 'Messagerie' %}"><i class="fas fa-comment-alt"></i>Messagerie</a> {# Lien vers la page de pré-messagerie #}
+        <a href="{% url 'Messagerie' %}"><i class="fas fa-comment-alt"></i>Messagerie</a>
         <a href="{% url 'Profil' %}"><i class="fas fa-user"></i>Profil</a>
     </footer>
-    
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="{% static 'IFRI_comotorage/script.js' %}"></script>
-    <script src="{% static 'IFRI_comotorage/script4.js' %}"></script>
-    <script>
-        // Données passées de la vue Django
-        const rideOffersData = JSON.parse('{{ ride_offers_json|escapejs }}');
-        const searchResultsDiv = document.getElementById('searchResults');
 
-        function displayRideOffers(offers) {
-            searchResultsDiv.innerHTML = ''; // Effacer les résultats précédents
-            if (offers.length === 0) {
-                searchResultsDiv.innerHTML = '<p style="text-align: center; margin-top: 20px; color: #666;">Aucun trajet trouvé.</p>';
-                return;
+    {# Scripts pour Leaflet (carte interactive) #}
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Script pour le pied de page mobile/desktop (inchangé)
+        document.addEventListener('DOMContentLoaded', function() {
+            const footer = document.getElementById('footer');
+            const span = document.getElementById('span');
+
+            if (window.innerWidth >= 500) {
+                footer.style.left = '-120px';
+                span.style.display = 'flex';
+
+                span.addEventListener('click', function() {
+                    if (footer.style.left === '-120px') {
+                        footer.style.left = '0px';
+                        span.querySelector('i').className = 'fas fa-angle-left';
+                    } else {
+                        footer.style.left = '-120px';
+                        span.querySelector('i').className = 'fas fa-angle-right';
+                    }
+                });
+            } else {
+                footer.style.position = 'static';
+                footer.style.left = 'auto';
+                span.style.display = 'none';
             }
 
-            offers.forEach(ride => {
-                const rideItem = document.createElement('div');
-                rideItem.classList.add('ride-offer-item');
-                rideItem.innerHTML = `
-                    <h3>Trajet de ${ride.departure_location} à ${ride.arrival_location}</h3>
-                    <p>Conducteur : <strong>${ride.driver}</strong></p>
-                    <p>Heure : <strong>${ride.departure_time}</strong></p>
-                    <p>Places restantes : <strong>${ride.remaining_seats}</strong></p> {# Utilisation de la nouvelle propriété #}
-                    ${ride.is_driver_of_this_ride ? 
-                        '<button class="join-button" disabled>Ceci est votre trajet</button>' : 
-                        (ride.has_requested ? 
-                            '<button class="join-button" disabled>Demande envoyée</button>' : 
-                            (ride.remaining_seats <= 0 ? 
-                                '<button class="join-button" disabled>Complet</button>' : 
-                                `<button class="join-button" data-ride-id="${ride.id}">Rejoindre</button>`
-                            )
-                        )
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 500) {
+                    if (footer.style.left === 'auto' || footer.style.left === '') {
+                         footer.style.left = '-120px';
+                         span.querySelector('i').className = 'fas fa-angle-right';
                     }
-                `;
-                searchResultsDiv.appendChild(rideItem);
+                    span.style.display = 'flex';
+                    footer.style.position = 'absolute';
+                } else {
+                    footer.style.position = 'static';
+                    footer.style.left = 'auto';
+                    span.style.display = 'none';
+                }
             });
+        });
 
-            // Ajouter des écouteurs d'événements aux nouveaux boutons "Rejoindre"
-            document.querySelectorAll('.join-button[data-ride-id]').forEach(button => {
-                button.addEventListener('click', function() {
-                    const rideId = this.dataset.rideId;
-                    window.location.href = `/request_ride/${rideId}/`; // Rediriger vers l'URL de demande de trajet
-                });
-            });
+        // --- Logique de la carte interactive ---
+        let map;
+        let marker;
+
+        const mapModal = document.createElement('div');
+        mapModal.className = 'map-modal';
+        mapModal.innerHTML = `
+            <div class="map-modal-content">
+                <span class="close-button">&times;</span>
+                <h2>Sélectionner un Emplacement sur la Carte</h2>
+                <div id="mapid"></div>
+                <p class="map-coords-display">Lat: <span id="selected-lat"></span>, Lon: <span id="selected-lon"></span></p>
+                <button class="map-select-btn-confirm" id="confirm-map-selection">Confirmer la sélection</button>
+            </div>
+        `;
+        document.body.appendChild(mapModal);
+
+        const closeButton = mapModal.querySelector('.close-button');
+        const confirmSelectionButton = mapModal.querySelector('#confirm-map-selection');
+        const selectedLatSpan = mapModal.querySelector('#selected-lat');
+        const selectedLonSpan = mapModal.querySelector('#selected-lon');
+        const searchLatInput = document.getElementById('id_search_latitude');
+        const searchLonInput = document.getElementById('id_search_longitude');
+        const searchLocationInput = document.getElementById('id_search_location');
+
+        closeButton.onclick = function() {
+            mapModal.style.display = 'none';
+        }
+        window.onclick = function(event) {
+            if (event.target == mapModal) {
+                mapModal.style.display = 'none';
+            }
         }
 
-        // Affichage initial des offres de trajet au chargement de la page
-        displayRideOffers(rideOffersData);
+        document.querySelector('.map-select-btn-form').addEventListener('click', function() {
+            mapModal.style.display = 'flex';
 
-        // Garder la logique existante de geocode et search_barre si elles existent dans script.js
-        // Vous devrez peut-être ajuster script.js pour appeler displayRideOffers après une recherche
-        // Par exemple, si geocode() récupère de nouveaux trajets, il devrait appeler displayRideOffers
+            if (!map) {
+                const defaultLat = 6.3685; // Cotonou, Bénin
+                const defaultLon = 2.4347;
+                map = L.map('mapid').setView([defaultLat, defaultLon], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+                map.on('click', onMapClick);
+            } else {
+                map.invalidateSize();
+            }
+
+            if (marker) {
+                map.removeLayer(marker);
+                marker = null;
+            }
+            selectedLatSpan.textContent = '';
+            selectedLonSpan.textContent = '';
+
+            // Si des coordonnées sont déjà présentes pour la recherche, centrer la carte et placer un marqueur
+            if (searchLatInput.value && searchLonInput.value) {
+                const lat = parseFloat(searchLatInput.value);
+                const lon = parseFloat(searchLonInput.value);
+                map.setView([lat, lon], 15);
+                marker = L.marker([lat, lon]).addTo(map);
+                selectedLatSpan.textContent = lat.toFixed(5);
+                selectedLonSpan.textContent = lon.toFixed(5);
+            }
+        });
+
+        function onMapClick(e) {
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker(e.latlng).addTo(map);
+            selectedLatSpan.textContent = e.latlng.lat.toFixed(5);
+            selectedLonSpan.textContent = e.latlng.lng.toFixed(5);
+        }
+
+        confirmSelectionButton.addEventListener('click', function() {
+            if (marker) {
+                const lat = marker.getLatLng().lat;
+                const lon = marker.getLatLng().lon;
+
+                searchLatInput.value = lat;
+                searchLonInput.value = lon;
+                
+                // Mettre à jour le champ texte visible avec une indication que la carte a été utilisée
+                // Cela ne remplace pas le texte saisi par l'utilisateur mais l'ajoute comme indice
+                if (searchLocationInput.value && !searchLocationInput.value.includes(" (carte)")) {
+                    searchLocationInput.value += " (carte)";
+                } else if (!searchLocationInput.value) {
+                    searchLocationInput.value = `Sélectionné sur carte (Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)})`;
+                }
+
+            } else {
+                alert('Veuillez sélectionner un point sur la carte.');
+            }
+            mapModal.style.display = 'none';
+        });
+
     </script>
 </body>
 </html>

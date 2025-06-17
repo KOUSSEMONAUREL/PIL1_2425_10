@@ -1,14 +1,9 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from .models import RideOffer, UserProfile
 from django.contrib.auth.models import User
-from .models import UserProfile, RideOffer
-from django.forms import formset_factory
 from django.forms import inlineformset_factory
 from django.utils import timezone
-
-class LoginForm(forms.Form):
-    username = forms.CharField(max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'input', 'placeholder': 'Nom d\'utilisateur ou Email'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input', 'placeholder': 'Mot de passe'}))
+from datetime import time
 
 class RegisterForm(forms.ModelForm):
     username = forms.CharField(max_length=150, required=True, widget=forms.TextInput(attrs={'class': 'input', 'placeholder': 'Nom d\'utilisateur'}))
@@ -34,6 +29,9 @@ class RegisterForm(forms.ModelForm):
             user.save()
         return user
 
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=255, required=True, widget=forms.TextInput(attrs={'class': 'input', 'placeholder': 'Nom d\'utilisateur ou Email'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input', 'placeholder': 'Mot de passe'}))
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
@@ -59,30 +57,69 @@ class UserUpdateForm(forms.ModelForm):
             'username': forms.TextInput(attrs={'class': 'input'}),
             'email': forms.EmailInput(attrs={'class': 'input'}),
         }
-        
-        
+
 class RideOfferForm(forms.ModelForm):
-    # Ajoutez un initial pour la date de départ pour qu'elle s'affiche par défaut avec la date du jour
     departure_date = forms.DateField(
         widget=forms.DateInput(attrs={'class': 'input', 'type': 'date'}),
-        initial=timezone.now().date(), # Définit la date du jour comme valeur initiale
-        required=True # Le champ est requis
+        initial=timezone.now().date(),
+        required=True
+    )
+    # NOUVEAUX CHAMPS CACHÉS POUR LA PUBLICATION
+    departure_latitude = forms.FloatField(
+        required=False, 
+        widget=forms.HiddenInput()
+    )
+    departure_longitude = forms.FloatField(
+        required=False, 
+        widget=forms.HiddenInput()
+    )
+    arrival_latitude = forms.FloatField(
+        required=False, 
+        widget=forms.HiddenInput()
+    )
+    arrival_longitude = forms.FloatField(
+        required=False, 
+        widget=forms.HiddenInput()
     )
 
     class Meta:
         model = RideOffer
-        fields = ['departure_location', 'arrival_location', 'departure_date', 'departure_time', 'available_seats']
+        fields = [
+            'departure_location', 'departure_latitude', 'departure_longitude', # Ajout des champs de coordonnées
+            'arrival_location', 'arrival_latitude', 'arrival_longitude',       # Ajout des champs de coordonnées
+            'departure_date', 'departure_time', 'available_seats'
+        ]
         widgets = {
             'departure_location': forms.TextInput(attrs={'class': 'input', 'placeholder': 'Adresse de départ'}),
             'arrival_location': forms.TextInput(attrs={'class': 'input', 'placeholder': 'Adresse d\'arrivée'}),
-            # 'departure_date' est déjà défini ci-dessus avec son initial
             'departure_time': forms.TimeInput(attrs={'class': 'input', 'type': 'time'}),
             'available_seats': forms.NumberInput(attrs={'class': 'input', 'placeholder': 'Nombre de places disponibles'}),
         }
 
+# Mise à jour du formset pour inclure les nouveaux champs de coordonnées
 RideOfferFormSet = inlineformset_factory(
     User, RideOffer, form=RideOfferForm,
-    fields=['departure_location', 'arrival_location', 'departure_date', 'departure_time', 'available_seats'],
+    fields=[
+        'departure_location', 'departure_latitude', 'departure_longitude',
+        'arrival_location', 'arrival_latitude', 'arrival_longitude',
+        'departure_date', 'departure_time', 'available_seats'
+    ],
     extra=1,
     can_delete=True
 )
+
+
+class RechercheForm(forms.Form):
+    search_location = forms.CharField(
+        max_length=255, 
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'input', 'placeholder': 'Rechercher un lieu'})
+    )
+    search_latitude = forms.FloatField(
+        required=False, 
+        widget=forms.HiddenInput(attrs={'id': 'id_search_latitude'})
+    )
+    search_longitude = forms.FloatField(
+        required=False, 
+        widget=forms.HiddenInput(attrs={'id': 'id_search_longitude'})
+    )

@@ -8,8 +8,27 @@
     <link rel="shortcut icon" href="{% static 'IFRI_comotorage/images/car.png' %}" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins&family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         /* Styles généraux pour les sections */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .Publier {
+            max-width: 90%;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding-bottom: 20px; /* Espace pour le footer */
+        }
+
         .publish-section {
             background-color: #fff;
             padding: 20px;
@@ -294,6 +313,99 @@
             background-color: #c82333;
         }
 
+        /* Styles pour l'intégration de la carte (modal) */
+        .map-modal {
+            display: none; /* Caché par défaut */
+            position: fixed;
+            z-index: 1000; /* Par-dessus tout le reste */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7); /* Fond semi-transparent */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .map-modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 800px; /* Taille maximale pour la carte */
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+        }
+
+        #mapid {
+            height: 400px; /* Hauteur de la carte */
+            width: 100%;
+            margin-top: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        
+        .map-coords-display {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #555;
+            text-align: center;
+        }
+
+        .map-select-btn-confirm {
+            padding: 8px 15px;
+            background-color: #17a2b8; /* Cyan */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .map-select-btn-confirm:hover {
+            background-color: #138496;
+        }
+
+        /* Style pour l'input et le bouton carte alignés */
+        .form-row-with-map {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Espacement entre l'input et le bouton */
+            margin-bottom: 15px;
+        }
+        .form-row-with-map .input {
+            flex-grow: 1; /* L'input prend le reste de l'espace */
+            margin-bottom: 0; /* Réinitialiser la marge interne du .input */
+        }
+        .form-row-with-map .map-trigger-btn { /* Nouveau style pour les boutons "Carte" */
+            padding: 10px 12px;
+            background-color: #6c757d; /* Gris pour le bouton carte */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .form-row-with-map .map-trigger-btn:hover {
+            background-color: #5a6268;
+        }
 
     @media ( min-width: 500px) {
 
@@ -400,9 +512,15 @@
                             <h3>Trajet #{{ forloop.counter }}</h3>
                             <p>Départ : <strong>{{ ride.departure_location }}</strong></p>
                             <p>Arrivée : <strong>{{ ride.arrival_location }}</strong></p>
-                            <p>Date : <strong>{{ ride.departure_date|date:"d/m/Y" }}</strong></p> {# Affichage de la date du trajet #}
+                            <p>Date : <strong>{{ ride.departure_date|date:"d/m/Y" }}</strong></p> 
                             <p>Heure : <strong>{{ ride.departure_time|time:"H:i" }}</strong></p>
                             <p>Places restantes : <strong>{{ ride.remaining_seats }}</strong></p>
+                            {% if ride.departure_latitude and ride.departure_longitude %}
+                                <p>Départ GPS: <strong>{{ ride.departure_latitude|floatformat:4 }}, {{ ride.departure_longitude|floatformat:4 }}</strong></p>
+                            {% endif %}
+                            {% if ride.arrival_latitude and ride.arrival_longitude %}
+                                <p>Arrivée GPS: <strong>{{ ride.arrival_latitude|floatformat:4 }}, {{ ride.arrival_longitude|floatformat:4 }}</strong></p>
+                            {% endif %}
                         </div>
                         {% endfor %}
                     </div> 
@@ -428,17 +546,26 @@
                                 {{ form.DELETE }}
                             {% endif %}
                             <h2>Nouveau Trajet {% if not forloop.first %}#{{ forloop.counter }}{% endif %}</h2>
-                            <div>
+                            
+                            <div class="form-row-with-map">
                                 {{ form.departure_location.errors }}
                                 {{ form.departure_location }}
+                                <button type="button" class="map-trigger-btn" data-form-index="{{ forloop.counter0 }}" data-location-type="departure">Carte</button>
                             </div>
-                            <div>
+                            {{ form.departure_latitude }} {# Champ caché #}
+                            {{ form.departure_longitude }} {# Champ caché #}
+
+                            <div class="form-row-with-map">
                                 {{ form.arrival_location.errors }}
                                 {{ form.arrival_location }}
+                                <button type="button" class="map-trigger-btn" data-form-index="{{ forloop.counter0 }}" data-location-type="arrival">Carte</button>
                             </div>
+                            {{ form.arrival_latitude }} {# Champ caché #}
+                            {{ form.arrival_longitude }} {# Champ caché #}
+
                             <div>
-                                {{ form.departure_date.errors }} {# Rendu du champ de date ici #}
-                                {{ form.departure_date }} {# Ce champ est généré par Django avec le widget DateInput #}
+                                {{ form.departure_date.errors }} 
+                                {{ form.departure_date }}
                             </div>
                             <div>
                                 {{ form.departure_time.errors }}
@@ -475,91 +602,297 @@
         <a href="{% url 'Accueil' %}"><i class="fas fa-home"></i>Accueil</a>
         <a href="{% url 'Rechercher' %}"><i class="fas fa-search"></i>Rechercher</a>
         <a href="{% url 'Publier' %}" class="active"><i class="fas fa-plus-circle"></i>Publier</a>
-        <a href="{% url 'Messagerie' %}"><i class="fas fa-comment-alt"></i>Messagerie</a> {# Lien vers la page de pré-messagerie #}
+        <a href="{% url 'Messagerie' %}"><i class="fas fa-comment-alt"></i>Messagerie</a> 
         <a href="{% url 'Profil' %}"><i class="fas fa-user"></i>Profil</a>
     </footer>
 
-    <script src="{% static 'IFRI_comotorage/script4.js' %}"></script>
+    {# Conteneur du modal de la carte (ajouté en dehors de la section Publier) #}
+    <div class="map-modal">
+        <div class="map-modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Sélectionner un Emplacement sur la Carte</h2>
+            <div id="mapid"></div>
+            <p class="map-coords-display">Lat: <span id="selected-lat"></span>, Lon: <span id="selected-lon"></span></p>
+            <button class="map-select-btn-confirm" id="confirm-map-selection">Confirmer la sélection</button>
+        </div>
+    </div>
+
+    {# Scripts pour Leaflet (carte interactive) #}
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
+        // Script pour le pied de page mobile/desktop (inchangé)
         document.addEventListener('DOMContentLoaded', function() {
-            const addMoreButton = document.getElementById('add-more-rides');
-            const formsWrapper = document.getElementById('forms-wrapper');
-            const totalForms = document.querySelector('#id_ride-TOTAL_FORMS');
-            const formTemplate = document.querySelector('.ride-form-block').cloneNode(true);
+            const footer = document.getElementById('footer');
+            const span = document.getElementById('span');
 
-            formTemplate.querySelectorAll('input').forEach(input => {
-                if (input.type !== 'hidden') {
-                    input.value = '';
-                }
-                input.id = '';
-                input.name = '';
-            });
-            formTemplate.querySelectorAll('.errorlist').forEach(error => error.remove());
-            const templateDeleteButton = formTemplate.querySelector('.delete-form-button');
-            if (templateDeleteButton) {
-                templateDeleteButton.remove();
-            }
+            if (window.innerWidth >= 500) {
+                footer.style.left = '-120px';
+                span.style.display = 'flex';
 
-            addMoreButton.addEventListener('click', function() {
-                const currentForms = formsWrapper.querySelectorAll('.ride-form-block').length;
-                const newFormIndex = totalForms.value;
-
-                const newForm = formTemplate.cloneNode(true);
-                newForm.id = `ride-form-${newFormIndex}`;
-
-                newForm.innerHTML = newForm.innerHTML.replace(/__prefix__/g, newFormIndex);
-                newForm.innerHTML = newForm.innerHTML.replace(/Nouveau Trajet\s#\d*/g, `Nouveau Trajet #${parseInt(newFormIndex) + 1}`);
-
-                const deleteButton = document.createElement('button');
-                deleteButton.setAttribute('type', 'button');
-                deleteButton.classList.add('delete-form-button');
-                deleteButton.innerHTML = '<i class="fas fa-times-circle"></i>';
-                deleteButton.onclick = function() { deleteForm(this); };
-                newForm.prepend(deleteButton);
-
-                const deleteInput = document.createElement('input');
-                deleteInput.setAttribute('type', 'checkbox');
-                deleteInput.setAttribute('name', `ride-${newFormIndex}-DELETE`);
-                deleteInput.setAttribute('id', `id_ride-${newFormIndex}-DELETE`);
-                deleteInput.style.display = 'none';
-                newForm.appendChild(deleteInput);
-
-
-                formsWrapper.appendChild(newForm);
-
-                totalForms.value = parseInt(totalForms.value) + 1;
-            });
-
-            window.deleteForm = function(button) {
-                const formBlock = button.closest('.ride-form-block');
-                const formIndex = formBlock.id.split('-')[2];
-                const deleteInput = document.getElementById(`id_ride-${formIndex}-DELETE`);
-                
-                if (deleteInput) {
-                    deleteInput.checked = true;
-                    formBlock.style.display = 'none';
-                } else {
-                    formBlock.remove();
-                    totalForms.value = parseInt(totalForms.value) - 1;
-                    reindexForms();
-                }
-            };
-
-            function reindexForms() {
-                const formBlocks = formsWrapper.querySelectorAll('.ride-form-block:not([style*="display: none"])');
-                let newIndex = 0;
-                formBlocks.forEach(block => {
-                    const oldIndex = block.id.split('-')[2];
-                    if (oldIndex !== newIndex.toString()) {
-                        block.id = `ride-form-${newIndex}`;
-                        block.innerHTML = block.innerHTML.replace(new RegExp(`ride-${oldIndex}`, 'g'), `ride-${newIndex}`);
-                        block.querySelector('h2').textContent = `Nouveau Trajet #${newIndex + 1}`;
+                span.addEventListener('click', function() {
+                    if (footer.style.left === '-120px') {
+                        footer.style.left = '0px';
+                        span.querySelector('i').className = 'fas fa-angle-left';
+                    } else {
+                        footer.style.left = '-120px';
+                        span.querySelector('i').className = 'fas fa-angle-right';
                     }
-                    newIndex++;
                 });
-                totalForms.value = newIndex;
+            } else {
+                footer.style.position = 'static';
+                footer.style.left = 'auto';
+                span.style.display = 'none';
             }
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 500) {
+                    if (footer.style.left === 'auto' || footer.style.left === '') {
+                         footer.style.left = '-120px';
+                         span.querySelector('i').className = 'fas fa-angle-right';
+                    }
+                    span.style.display = 'flex';
+                    footer.style.position = 'absolute';
+                } else {
+                    footer.style.position = 'static';
+                    footer.style.left = 'auto';
+                    span.style.display = 'none';
+                }
+            });
         });
+
+        // --- Logique de la carte interactive pour le Formset ---
+        let map;
+        let marker;
+        let currentFormIndex;   // Pour savoir quel formulaire du formset mettre à jour
+        let currentLocationType; // 'departure' ou 'arrival'
+
+        // Références aux éléments du DOM du modal
+        const mapModal = document.querySelector('.map-modal');
+        const closeButton = mapModal.querySelector('.close-button');
+        const confirmSelectionButton = mapModal.querySelector('#confirm-map-selection');
+        const selectedLatSpan = mapModal.querySelector('#selected-lat');
+        const selectedLonSpan = mapModal.querySelector('#selected-lon');
+        const mapidDiv = document.getElementById('mapid'); // Référence au conteneur de la carte
+
+        closeButton.onclick = function() {
+            console.log('Fermeture du modal de la carte.');
+            mapModal.style.display = 'none';
+        }
+        window.onclick = function(event) {
+            if (event.target == mapModal) {
+                console.log('Clic en dehors du modal, fermeture.');
+                mapModal.style.display = 'none';
+            }
+        }
+
+        // Fonction pour gérer l'ouverture de la carte
+        function openMapForSelection(formIndex, locationType) {
+            console.log(`Ouverture de la carte pour le formulaire ${formIndex}, type: ${locationType}`);
+            currentFormIndex = formIndex;
+            currentLocationType = locationType;
+            mapModal.style.display = 'flex'; // Afficher le modal
+
+            // Utiliser setTimeout pour s'assurer que le DOM a bien appliqué le display:flex
+            // avant d'initialiser ou d'invalider la carte.
+            setTimeout(() => {
+                if (!map) {
+                    console.log('Initialisation de la carte Leaflet...');
+                    const defaultLat = 6.3685; // Cotonou, Bénin
+                    const defaultLon = 2.4347;
+                    map = L.map('mapid').setView([defaultLat, defaultLon], 13);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
+                    map.on('click', onMapClick);
+                    console.log('Carte initialisée.');
+                } else {
+                    console.log('Invalider la taille de la carte existante.');
+                    map.invalidateSize(); // Invalider la taille pour s'assurer que la carte est rendue correctement
+                }
+
+                // Réinitialiser le marqueur et les coordonnées affichées
+                if (marker) {
+                    map.removeLayer(marker);
+                    marker = null;
+                }
+                selectedLatSpan.textContent = '';
+                selectedLonSpan.textContent = '';
+
+                // Charger les coordonnées existantes si elles existent pour ce champ spécifique
+                const latInput = document.getElementById(`id_ride-${currentFormIndex}-${currentLocationType}_latitude`);
+                const lonInput = document.getElementById(`id_ride-${currentFormIndex}-${currentLocationType}_longitude`);
+
+                if (latInput && latInput.value && lonInput && lonInput.value) {
+                    const lat = parseFloat(latInput.value);
+                    const lon = parseFloat(lonInput.value);
+                    console.log(`Chargement des coordonnées existantes: Lat=${lat}, Lon=${lon}`);
+                    map.setView([lat, lon], 15); // Centrer la carte sur les coordonnées existantes
+                    marker = L.marker([lat, lon]).addTo(map); // Placer le marqueur
+                    selectedLatSpan.textContent = lat.toFixed(5);
+                    selectedLonSpan.textContent = lon.toFixed(5);
+                } else {
+                    console.log('Aucune coordonnée existante trouvée pour ce champ.');
+                }
+            }, 100); // Petit délai pour s'assurer du rendu du modal
+        }
+
+        function onMapClick(e) {
+            console.log(`Clic sur la carte: Lat=${e.latlng.lat}, Lon=${e.latlng.lon}`);
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker(e.latlng).addTo(map);
+            selectedLatSpan.textContent = e.latlng.lat.toFixed(5);
+            selectedLonSpan.textContent = e.latlng.lng.toFixed(5);
+        }
+
+        confirmSelectionButton.addEventListener('click', function() {
+            console.log('Bouton "Confirmer la sélection" cliqué.');
+            if (marker) {
+                const lat = marker.getLatLng().lat;
+                const lon = marker.getLatLng().lng;
+
+                const latInput = document.getElementById(`id_ride-${currentFormIndex}-${currentLocationType}_latitude`);
+                const lonInput = document.getElementById(`id_ride-${currentFormIndex}-${currentLocationType}_longitude`);
+                const locationTextInput = document.getElementById(`id_ride-${currentFormIndex}-${currentLocationType}_location`);
+
+                if (latInput && lonInput) {
+                    latInput.value = lat;
+                    lonInput.value = lon;
+                }
+
+                if (locationTextInput) {
+                    if (!locationTextInput.value.includes(" (carte)")) {
+                        locationTextInput.value += " (carte)";
+                    }
+                }
+            } else {
+                alert('Veuillez sélectionner un point sur la carte.');
+            }
+            mapModal.style.display = 'none';
+        });
+
+
+        // --- Logique du Formset Django (modifiée pour intégrer les boutons carte) ---
+        const addMoreButton = document.getElementById('add-more-rides');
+        const formsWrapper = document.getElementById('forms-wrapper');
+        const totalForms = document.querySelector('#id_ride-TOTAL_FORMS');
+        const formTemplate = document.querySelector('.ride-form-block').cloneNode(true);
+
+        formTemplate.querySelectorAll('input').forEach(input => {
+            if (input.type !== 'hidden') {
+                input.value = '';
+            }
+            input.id = '';
+            input.name = '';
+        });
+        formTemplate.querySelectorAll('.errorlist').forEach(error => error.remove());
+        const templateDeleteButton = formTemplate.querySelector('.delete-form-button');
+        if (templateDeleteButton) {
+            templateDeleteButton.remove();
+        }
+        formTemplate.querySelectorAll('.map-trigger-btn').forEach(btn => {
+            btn.removeAttribute('data-form-index');
+            btn.removeAttribute('data-location-type');
+            // Pas besoin de removeEventListener ici, car c'est un clone frais.
+        });
+
+
+        function attachMapButtonListeners(formBlock) {
+            formBlock.querySelectorAll('.map-trigger-btn').forEach(button => {
+                const formIndex = button.dataset.formIndex;
+                const locationType = button.dataset.locationType;
+                // S'assurer d'attacher l'événement une seule fois par bouton
+                button.onclick = null; // Supprime tout ancien gestionnaire pour éviter les doublons
+                button.onclick = function() {
+                    openMapForSelection(formIndex, locationType);
+                };
+            });
+        }
+
+        // Attacher les écouteurs aux formulaires initiaux au chargement
+        formsWrapper.querySelectorAll('.ride-form-block').forEach(formBlock => {
+            const formIndex = formBlock.id.split('-')[2];
+            // Assurez-vous que les data-attributs sont définis pour les boutons initiaux
+            formBlock.querySelector('.map-trigger-btn[data-location-type="departure"]').dataset.formIndex = formIndex;
+            formBlock.querySelector('.map-trigger-btn[data-location-type="arrival"]').dataset.formIndex = formIndex;
+            attachMapButtonListeners(formBlock);
+        });
+
+
+        addMoreButton.addEventListener('click', function() {
+            const currentForms = formsWrapper.querySelectorAll('.ride-form-block').length;
+            const newFormIndex = totalForms.value;
+
+            const newForm = formTemplate.cloneNode(true);
+            newForm.id = `ride-form-${newFormIndex}`;
+
+            newForm.innerHTML = newForm.innerHTML.replace(/__prefix__/g, newFormIndex);
+            newForm.innerHTML = newForm.innerHTML.replace(/Nouveau Trajet\s#\d*/g, `Nouveau Trajet #${parseInt(newFormIndex) + 1}`);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.setAttribute('type', 'button');
+            deleteButton.classList.add('delete-form-button');
+            deleteButton.innerHTML = '<i class="fas fa-times-circle"></i>';
+            deleteButton.onclick = function() { deleteForm(this); };
+            newForm.prepend(deleteButton);
+
+            const deleteInput = document.createElement('input');
+            deleteInput.setAttribute('type', 'checkbox');
+            deleteInput.setAttribute('name', `ride-${newFormIndex}-DELETE`);
+            deleteInput.setAttribute('id', `id_ride-${newFormIndex}-DELETE`);
+            deleteInput.style.display = 'none';
+            newForm.appendChild(deleteInput);
+
+            newForm.querySelectorAll('.map-trigger-btn').forEach(btn => {
+                btn.dataset.formIndex = newFormIndex;
+            });
+            attachMapButtonListeners(newForm);
+
+
+            formsWrapper.appendChild(newForm);
+
+            totalForms.value = parseInt(totalForms.value) + 1;
+        });
+
+        window.deleteForm = function(button) {
+            const formBlock = button.closest('.ride-form-block');
+            const formIndex = formBlock.id.split('-')[2];
+            const deleteInput = document.getElementById(`id_ride-${formIndex}-DELETE`);
+            
+            if (deleteInput) {
+                deleteInput.checked = true;
+                formBlock.style.display = 'none';
+            } else {
+                formBlock.remove();
+                totalForms.value = parseInt(totalForms.value) - 1;
+                reindexForms();
+            }
+        };
+
+        function reindexForms() {
+            const formBlocks = formsWrapper.querySelectorAll('.ride-form-block:not([style*="display: none"])');
+            let newIndex = 0;
+            formBlocks.forEach(block => {
+                const oldIndex = block.id.split('-')[2];
+                if (oldIndex !== newIndex.toString()) {
+                    block.id = `ride-form-${newIndex}`;
+                    block.innerHTML = block.innerHTML.replace(new RegExp(`name="ride-${oldIndex}-`, 'g'), `name="ride-${newIndex}-`);
+                    block.innerHTML = block.innerHTML.replace(new RegExp(`id="id_ride-${oldIndex}-`, 'g'), `id="id_ride-${newIndex}-`);
+                    block.querySelector('h2').textContent = `Nouveau Trajet #${newIndex + 1}`;
+
+                    block.querySelectorAll('.map-trigger-btn').forEach(btn => {
+                        btn.dataset.formIndex = newIndex;
+                    });
+                    // Ré-attacher les écouteurs pour les formulaires réindexés
+                    attachMapButtonListeners(block);
+                }
+                newIndex++;
+            });
+            totalForms.value = newIndex;
+        }
+
     </script>
+    <script src="{% static 'IFRI_comotorage/script4.js' %}"></script>
 </body>
 </html>

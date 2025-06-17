@@ -48,14 +48,15 @@ def save_user_profile(sender, instance, **kwargs):
 class RideOffer(models.Model):
     driver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='published_rides')
     departure_location = models.CharField(max_length=255)
+    # NOUVEAUX CHAMPS POUR LA LATITUDE ET LONGITUDE DE DÉPART
     departure_latitude = models.FloatField(null=True, blank=True)
     departure_longitude = models.FloatField(null=True, blank=True)
 
     arrival_location = models.CharField(max_length=255)
+    # NOUVEAUX CHAMPS POUR LA LATITUDE ET LONGITUDE D'ARRIVÉE
     arrival_latitude = models.FloatField(null=True, blank=True)
     arrival_longitude = models.FloatField(null=True, blank=True)
 
-    # Champ pour la date du trajet, avec la date du jour comme valeur par défaut
     departure_date = models.DateField(default=timezone.now) 
     departure_time = models.TimeField(default=time(8, 0))
     available_seats = models.PositiveIntegerField(default=1)
