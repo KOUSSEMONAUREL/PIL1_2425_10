@@ -1,0 +1,130 @@
+1. Introduction
+Dans le cadre de notre formation, nous avons conçu et développé une application web permettant
+aux élèves de notre établissement de pratiquer le covoiturage lorsqu’ils partagent le même 
+tronçon de trajet. L’objectif est de réduire les coûts de transport, désengorger le trafic et 
+promouvoir une mobilité plus écologique et solidaire. Cette application, nommée IFRI_comotorage, 
+est destinée aux étudiants de l'Institut de Formation et de Recherche en Informatique (IFRI) de 
+l'Université d’Abomey-Calavi. Elle facilite la mise en relation des conducteurs et passagers pour
+des trajets domicile-campus.
+
+
+
+2. Équipe de projet
+Notre groupe est composé de six membres :
+
+-GL1 : BIDIBI Emeline-Nellie
+-IA1 : KUISSOPA-MANTE Vernon Dabawi
+-IM1 : HOUANNOU Marcos Primaël
+-SEIOT1 : ZOSSOU Crédo Fréjus
+-SI1 : ADJAGBA Océane Adégnika
+-SI1 : KOUSSEMON Godwill Aurel Sèdjro
+
+Au départ, aucun de nous ne se connaissait personnellement. La cohésion du groupe s’est donc construite progressivement grâce à une communication ouverte, des réunions régulières et une répartition claire des rôles selon les compétences
+et les disponibilités de chacun. L’utilisation d’outils collaboratifs en ligne nous a permis de partager nos idées 
+et d’avancer efficacement, malgré nos différences de personnalités et d’emplois du temps. Cette expérience nous a 
+appris l’importance de l’écoute, de la confiance et du respect mutuel pour garantir la réussite collective.
+
+
+
+
+
+3. Cahier des charges
+Objectifs principaux :
+
+ - Mettre en relation des élèves effectuant un trajet similaire.
+
+ - Offrir une interface simple et conviviale.
+
+ - Garantir la sécurité et la confidentialité des données.
+
+Contraintes :
+
+ - Accessibilité sur tout navigateur web.
+
+ - Temps de réponse rapide.
+
+ - Simplicité d’utilisation pour tous les profils d’élèves.
+
+
+
+
+
+4. Description technique
+L’application est développée en utilisant des technologies web 
+modernes pour assurer une expérience utilisateur fluide et réactive.
+Elle permet aux utilisateurs de s’inscrire, de publier des trajets, 
+de rechercher des offres et de communiquer entre eux via une messagerie intégrée.
+Technologies utilisées :
+
+Frontend : HTML, CSS, JavaScript ([préciser le framework si utilisé])
+
+Backend : [ex. PHP, Python avec Flask ou Django]
+
+Base de données : [ex. MySQL, SQLite]
+
+Outils de gestion de projet : [ex. Trello, GitHub]
+
+Principales fonctionnalités :
+
+Création d’un compte utilisateur sécurisé.
+
+Publication et recherche de trajets.
+
+Filtres par itinéraire, horaires et nombre de places.
+
+Notifications et messagerie interne pour organiser le trajet.
+
+
+
+5. Répartition des tâches
+Membre	Rôle principal
+[Nom 1]	Maquette et design de l’interface
+[Nom 2]	Développement frontend
+[Nom 3]	Développement backend
+[Nom 4]	Modélisation et gestion de la base de données
+[Nom 5]	Scénarios de tests, débogage et assurance qualité
+[Nom 6]	Documentation, rédaction du rapport et préparation de la soutenance
+
+
+
+6. Résultats obtenus
+Application fonctionnelle et testée avec un échantillon d’utilisateurs.
+
+- Interface claire et responsive.
+
+- Données utilisateurs protégées.
+
+- Retour d’expérience positif des testeurs.
+
+
+
+
+7. Problèmes rencontrés et solutions
+Nous avons été confrontés à plusieurs défis, tels que :
+
+Manque de cohésion initial : surmonté grâce à des échanges fréquents, des discussions bienveillantes et un suivi rigoureux.
+
+Problèmes techniques de compatibilité : résolus par des vérifications et corrections multiples.
+
+Gestion du temps : une planification hebdomadaire a permis de respecter le calendrier.
+
+
+
+8. Perspectives d’amélioration
+Pour perfectionner l’application, nous envisageons :
+
+La création d’une version mobile.
+
+L’intégration d’un système de notation pour renforcer la confiance entre utilisateurs.
+
+Une fonctionnalité de suivi en temps réel pour plus de sécurité.
+
+
+
+
+9. Conclusion
+Ce projet a été pour nous une opportunité de développer des compétences techniques et 
+humaines. Il nous a appris à travailler en équipe avec des personnes que nous ne connaissions pas, 
+à gérer des conflits mineurs et à coordonner nos efforts pour atteindre un objectif commun. Nous en 
+tirons une expérience enrichissante, tant sur le plan professionnel que personnel.
+
