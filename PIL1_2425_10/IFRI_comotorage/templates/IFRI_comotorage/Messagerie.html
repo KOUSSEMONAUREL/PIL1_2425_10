@@ -4,33 +4,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IFRI_comotorage - Messagerie</title> {# Changed title for clarity #}
+    <title>IFRI_comotorage - Chat pour Trajet</title>
     <link rel="shortcut icon" href="Asset/ressources/Images/car.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins&family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'IFRI_comotorage/styles2.css' %}">
+    <style>
+        /* Styles spécifiques pour la page de chat du trajet */
+        .chat-header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .chat-header h1 {
+            margin: 0;
+            font-size: 1.4em;
+        }
+        .chat-messages {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            height: 60vh; /* Hauteur fixe pour le chat défilable */
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse; /* Nouveaux messages en bas */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .message-item {
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            border-radius: 15px;
+            max-width: 70%;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+        .my-message {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end; /* Aligner à droite */
+            border-bottom-right-radius: 2px;
+        }
+        .other-message {
+            background-color: #e2e6ea;
+            color: #333;
+            align-self: flex-start; /* Aligner à gauche */
+            border-bottom-left-radius: 2px;
+        }
+        .message-sender {
+            font-weight: bold;
+            font-size: 0.8em;
+            margin-bottom: 3px;
+            color: rgba(255,255,255,0.8); /* Pour mes messages */
+        }
+        .other-message .message-sender {
+            color: #555;
+        }
+        .message-timestamp {
+            font-size: 0.7em;
+            color: rgba(255,255,255,0.6);
+            text-align: right;
+            margin-top: 2px;
+        }
+        .other-message .message-timestamp {
+            color: #777;
+            text-align: left;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 10px;
+            background-color: #f0f2f5;
+            border-top: 1px solid #ddd;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+        .chat-input-area input[type="text"] {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            font-size: 1em;
+            margin-right: 10px;
+        }
+        .chat-input-area button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+        }
+        .chat-input-area button:hover {
+            background-color: #0056b3;
+        }
+
+        #footer {
+            display: flex;
+            justify-content: center;
+            flex-wrap: nowrap;
+            border-top: 2px solid gainsboro;
+            width: 90%;
+            gap: 15px;
+            padding-top: 10px;
+            margin-bottom: 20px;
+            z-index: 1;
+        }
+
+        #footer a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            text-decoration: none;
+            color: initial;
+            font-size: 3.9vw;
+        }
+
+        #footer a:hover {
+            color: #0467e0;
+        }
+
+        #span {
+            display: none;
+        }
+
+        @media ( min-width: 500px) {
+
+        .Accueil {
+            width: 80vw;
+        }
+
+        #footer {
+            position: absolute;
+            justify-content: flex-start;
+            flex-direction: column;
+            border-top: none;
+            border: 2px solid rgb(246, 244, 244);
+            width: 100px;
+            border-radius: 5px;
+            gap: 30px;
+            padding-top: 0;
+            top: 25%;
+            left: -120px;
+            transition: left 0.8s ease;
+        }
+
+        #footer a {
+            color: initial;
+            font-size: 20px;
+            padding: 4px;
+        }
+
+        #span {
+            background-color: rgb(242, 242, 242);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 25px;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transition: left 0.4s ease;
+        }
+
+        #span:hover {
+            background-color: #2b84f0;
+            font-size: 30px;
+            left: 10px;
+            color: white;
+        }
+
+        }
+    </style>
 </head>
 <body>
 
     <section class="Profil">
         <section class="sec11">
-            <i class="fas fa-arrow-left"></i>
-            <h1>Messagerie</h1>
+            <i class="fas fa-arrow-left" onclick="window.history.back()"></i>
+            <h1>Chat du Trajet</h1>
             <i class="fas fa"></i>
         </section>
     </section>
 
     <section class="messenger">
-        {% if request.user.is_authenticated %}
-        <center> Logout from chat <a href="{% url 'index' %}">Logout</a></center>
-        {% else %}
-        <center> Vous êtes connecté en tant qu'invité. </center>
-        {% endif %}
+        <div class="chat-header">
+            <h1>Trajet : {{ ride_offer.departure_location }} &rarr; {{ ride_offer.arrival_location }}</h1>
+            <p>Conducteur : {{ ride_offer.driver.username }}</p>
+        </div>
 
-        <div class="chat__item__container" id="id_chat_item_container" style="font-size: 20px"></div>
+        <div class="chat-messages" id="id_chat_item_container">
+            {% for message in messages %}
+                <div class="message-item {% if message.sender.username == current_user_username %}my-message{% else %}other-message{% endif %}">
+                    <div class="message-sender">{{ message.sender.username }}</div>
+                    <div>{{ message.message }}</div>
+                    <div class="message-timestamp">{{ message.timestamp|date:"H:i" }}</div>
+                </div>
+            {% endfor %}
+        </div>
 
         <div class="chat-input-area">
-            <input type="text" id="id_message_send_input" placeholder="Type your message..." />
+            <input type="text" id="id_message_send_input" placeholder="Écrivez votre message..." />
             <button type="submit" id="id_message_send_button"><i class="fas fa-paper-plane"></i></button>
         </div>
     </section>
@@ -43,12 +231,83 @@
         <a href="{% url 'Accueil' %}"><i class="fas fa-home"></i>Accueil</a>
         <a href="{% url 'Rechercher' %}"><i class="fas fa-search"></i>Rechercher</a>
         <a href="{% url 'Publier' %}"><i class="fas fa-plus-circle"></i>Publier</a>
-        <a href="{% url 'Messagerie' %}"><i class="fas fa-comment-alt"></i>Messagerie</a>
+        <a href="{% url 'pre_messagerie' %}" class="active"><i class="fas fa-comment-alt"></i>Messagerie</a> {# Lien vers la page de pré-messagerie #}
         <a href="{% url 'Profil' %}"><i class="fas fa-user"></i>Profil</a>
     </footer>
 
     <body data-username="{{ request.user.username|default:'Anonyme'|escapejs }}">
-    <script src="{% static 'IFRI_comotorage/script4.js' %}"></script>
+    <script>
+        // Passer l'ID du trajet à JavaScript
+        const rideId = {{ ride_offer.id }};
+        const currentChatId = {{ chat_id }}; // Utiliser chat_id pour identifier le salon de discussion spécifique
+        const currentUser = document.body.dataset.username;
 
+        // Configuration WebSocket pour le chat spécifique au trajet
+        const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/chat/" + currentChatId + "/");
+
+        chatSocket.onopen = function (e) {
+            console.log("La connexion WebSocket pour le chat du trajet a été établie avec succès !");
+        };
+
+        chatSocket.onclose = function (e) {
+            console.log("Quelque chose d'inattendu s'est produit avec la connexion WebSocket !", e);
+        };
+        
+        document.querySelector("#id_message_send_input").focus();
+        document.querySelector("#id_message_send_input").onkeyup = function (e) {
+            if (e.keyCode === 13) { 
+                document.querySelector("#id_message_send_button").click();
+            }
+        };
+
+        document.querySelector("#id_message_send_button").onclick = function (e) {
+            var messageInput = document.querySelector("#id_message_send_input").value;
+            
+            if (messageInput.trim() !== "") { 
+                chatSocket.send(JSON.stringify({ 
+                    'message': messageInput, 
+                    'username': currentUser,
+                    'chat_id': currentChatId, // Envoyer chat_id avec le message
+                }));
+                document.querySelector("#id_message_send_input").value = "";
+            }
+        };
+
+        chatSocket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            const messageContainer = document.querySelector("#id_chat_item_container");
+
+            const messageItem = document.createElement("div");
+            messageItem.classList.add("message-item");
+
+            if (data.username === currentUser) {
+                messageItem.classList.add("my-message"); 
+            } else {
+                messageItem.classList.add("other-message"); 
+            }
+
+            // Créer l'élément de l'expéditeur
+            const senderDiv = document.createElement("div");
+            senderDiv.classList.add("message-sender");
+            senderDiv.textContent = data.username;
+            messageItem.appendChild(senderDiv);
+
+            // Créer l'élément de contenu du message
+            const contentDiv = document.createElement("div");
+            contentDiv.textContent = data.message;
+            messageItem.appendChild(contentDiv);
+
+            // Créer l'élément d'horodatage
+            const timestampDiv = document.createElement("div");
+            timestampDiv.classList.add("message-timestamp");
+            // Formater l'horodatage - s'il est fourni par le serveur, l'utiliser, sinon utiliser l'heure actuelle
+            const messageDate = data.timestamp ? new Date(data.timestamp) : new Date();
+            timestampDiv.textContent = messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            messageItem.appendChild(timestampDiv);
+
+            // Insérer le nouveau message en haut (pour flex-direction: column-reverse)
+            messageContainer.insertBefore(messageItem, messageContainer.firstChild);
+        };
+    </script>
 </body>
 </html>

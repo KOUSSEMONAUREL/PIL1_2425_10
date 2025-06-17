@@ -10,6 +10,52 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins&family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'IFRI_comotorage/styles2.css' %}">
+    <style>
+        /* Ajouter quelques styles pour le bouton de jointure */
+        .join-button {
+            background-color: #28a745; /* Vert */
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .join-button:hover {
+            background-color: #218838;
+        }
+        .join-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .ride-offer-item {
+            background-color: #e6f7ff; /* Bleu clair */
+            border: 1px solid #91d5ff; /* Bordure bleu légèrement plus foncée */
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.1);
+        }
+        .ride-offer-item h3 {
+            color: #0056b3;
+            font-size: 1.2em;
+            margin-top: 0;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #b3e0ff;
+            padding-bottom: 5px;
+        }
+        .ride-offer-item p {
+            font-size: 1em;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .ride-offer-item p strong {
+            color: #007bff;
+        }
+    </style>
 </head>
 <body>
 
@@ -30,7 +76,9 @@
             </div>
         </section>
 
-        <section class="sec41" id="searchResults"></section>
+        <section class="sec41" id="searchResults">
+            <!-- Les offres de trajet seront affichées ici par JavaScript -->
+        </section>
         
     </section>
 
@@ -40,15 +88,64 @@
 
     <footer id="footer">
         <a href="{% url 'Accueil' %}"><i class="fas fa-home"></i>Accueil</a>
-        <a href="{% url 'Rechercher' %}"><i class="fas fa-search"></i>Rechercher</a>
+        <a href="{% url 'Rechercher' %}" class="active"><i class="fas fa-search"></i>Rechercher</a>
         <a href="{% url 'Publier' %}"><i class="fas fa-plus-circle"></i>Publier</a>
-        <a href="{% url 'Messagerie' %}"><i class="fas fa-comment-alt"></i>Messagerie</a>
+        <a href="{% url 'Messagerie' %}"><i class="fas fa-comment-alt"></i>Messagerie</a> {# Lien vers la page de pré-messagerie #}
         <a href="{% url 'Profil' %}"><i class="fas fa-user"></i>Profil</a>
     </footer>
     
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="{% static 'IFRI_comotorage/script.js' %}"></script>
     <script src="{% static 'IFRI_comotorage/script4.js' %}"></script>
+    <script>
+        // Données passées de la vue Django
+        const rideOffersData = JSON.parse('{{ ride_offers_json|escapejs }}');
+        const searchResultsDiv = document.getElementById('searchResults');
 
+        function displayRideOffers(offers) {
+            searchResultsDiv.innerHTML = ''; // Effacer les résultats précédents
+            if (offers.length === 0) {
+                searchResultsDiv.innerHTML = '<p style="text-align: center; margin-top: 20px; color: #666;">Aucun trajet trouvé.</p>';
+                return;
+            }
+
+            offers.forEach(ride => {
+                const rideItem = document.createElement('div');
+                rideItem.classList.add('ride-offer-item');
+                rideItem.innerHTML = `
+                    <h3>Trajet de ${ride.departure_location} à ${ride.arrival_location}</h3>
+                    <p>Conducteur : <strong>${ride.driver}</strong></p>
+                    <p>Heure : <strong>${ride.departure_time}</strong></p>
+                    <p>Places restantes : <strong>${ride.remaining_seats}</strong></p> {# Utilisation de la nouvelle propriété #}
+                    ${ride.is_driver_of_this_ride ? 
+                        '<button class="join-button" disabled>Ceci est votre trajet</button>' : 
+                        (ride.has_requested ? 
+                            '<button class="join-button" disabled>Demande envoyée</button>' : 
+                            (ride.remaining_seats <= 0 ? 
+                                '<button class="join-button" disabled>Complet</button>' : 
+                                `<button class="join-button" data-ride-id="${ride.id}">Rejoindre</button>`
+                            )
+                        )
+                    }
+                `;
+                searchResultsDiv.appendChild(rideItem);
+            });
+
+            // Ajouter des écouteurs d'événements aux nouveaux boutons "Rejoindre"
+            document.querySelectorAll('.join-button[data-ride-id]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const rideId = this.dataset.rideId;
+                    window.location.href = `/request_ride/${rideId}/`; // Rediriger vers l'URL de demande de trajet
+                });
+            });
+        }
+
+        // Affichage initial des offres de trajet au chargement de la page
+        displayRideOffers(rideOffersData);
+
+        // Garder la logique existante de geocode et search_barre si elles existent dans script.js
+        // Vous devrez peut-être ajuster script.js pour appeler displayRideOffers après une recherche
+        // Par exemple, si geocode() récupère de nouveaux trajets, il devrait appeler displayRideOffers
+    </script>
 </body>
-</html> 
+</html>

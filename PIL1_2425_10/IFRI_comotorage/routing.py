@@ -3,5 +3,5 @@ from IFRI_comotorage.consumers import ChatConsumer
 
 
 websocket_urlpatterns = [
-    path("" , ChatConsumer.as_asgi()) , 
+    path("ws/chat/<int:chat_id>/" , ChatConsumer.as_asgi()) , # Nouvelle URL de chat spécifique au trajet
 ]

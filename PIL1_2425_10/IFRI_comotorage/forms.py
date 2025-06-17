@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import UserProfile, RideOffer # Import RideOffer
-from django.forms import formset_factory # Import formset_factory
+from .models import UserProfile, RideOffer
+from django.forms import formset_factory
 
 class LoginForm(forms.Form):
     username = forms.CharField(

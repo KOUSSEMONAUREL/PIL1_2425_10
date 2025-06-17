@@ -1,10 +1,10 @@
+# IFRI_comotorage/models.py
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
-import os
+from datetime import time
 
 class Location(models.Model):
     name = models.CharField(max_length=200)
@@ -14,10 +14,9 @@ class Location(models.Model):
     class Meta:
         verbose_name = ("Lieu")
         verbose_name_plural = ("Lieux")
-        
+
     def __str__(self):
-        return self.name  
-    
+        return self.name
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -27,7 +26,7 @@ class UserProfile(models.Model):
     nombre_places = models.PositiveIntegerField(default=1)
     photo_profil = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     type_utilisateur = models.CharField(
-        max_length=20, 
+        max_length=20,
         choices=[('conducteur', 'Conducteur'), ('passager', 'Passager')],
         default='conducteur'
     )
@@ -38,7 +37,6 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"Profil de {self.user.username}"
 
-# Signal pour créer automatiquement un profil quand un utilisateur est créé
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
@@ -48,22 +46,84 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     instance.userprofile.save()
 
-
 class RideOffer(models.Model):
     driver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='published_rides')
     departure_location = models.CharField(max_length=255)
+    departure_latitude = models.FloatField(null=True, blank=True)
+    departure_longitude = models.FloatField(null=True, blank=True)
+
     arrival_location = models.CharField(max_length=255)
-    departure_time = models.TimeField()
+    arrival_latitude = models.FloatField(null=True, blank=True)
+    arrival_longitude = models.FloatField(null=True, blank=True)
+
+    departure_date = models.DateField(default=timezone.now)
+    departure_time = models.TimeField(default=time(8, 0))
     available_seats = models.PositiveIntegerField(default=1)
-    # You might want to add a date field if rides are for specific dates
-    # ride_date = models.DateField(default=timezone.now) 
+    seats_taken = models.PositiveIntegerField(default=0)
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = ("Offre de Trajet")
         verbose_name_plural = ("Offres de Trajets")
-        ordering = ['departure_time'] # Order by departure time by default
+        ordering = ['departure_time']
 
     def __str__(self):
         return f"Trajet de {self.departure_location} à {self.arrival_location} par {self.driver.username}"
+
+    @property
+    def remaining_seats(self):
+        """Calcule et retourne le nombre de places restantes."""
+        return self.available_seats - self.seats_taken
+
+class RideRequest(models.Model):
+    ride_offer = models.ForeignKey(RideOffer, on_delete=models.CASCADE, related_name='requests')
+    passenger = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ride_requests')
+    
+    STATUS_CHOICES = [
+        ('pending', 'En attente'),
+        ('accepted', 'Accepté'),
+        ('rejected', 'Rejeté'),
+        ('cancelled', 'Annulé'),
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    
+    chat_access_granted = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = ("Demande de Trajet")
+        verbose_name_plural = ("Demandes de Trajets")
+        unique_together = ('ride_offer', 'passenger')
+
+    def __str__(self):
+        return f"Demande de {self.passenger.username} pour {self.ride_offer} - Statut: {self.status}"
+
+class RideChat(models.Model):
+    ride_offer = models.OneToOneField(RideOffer, on_delete=models.CASCADE, related_name='chat')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = ("Chat de Trajet")
+        verbose_name_plural = ("Chats de Trajets")
+
+    def __str__(self):
+        return f"Chat pour le trajet: {self.ride_offer}"
+
+class ChatMessage(models.Model):
+    chat = models.ForeignKey(RideChat, on_delete=models.CASCADE, related_name='messages')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = ("Message de Chat")
+        verbose_name_plural = ("Messages de Chat")
+        ordering = ['timestamp']
+
+    def __str__(self):
+        return f"[{self.timestamp.strftime('%H:%M')}] {self.sender.username}: {self.message[:50]}..."

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFRI_comotorage - Messagerie</title>
+    <link rel="shortcut icon" href="Asset/ressources/Images/car.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins&family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'IFRI_comotorage/styles2.css' %}">
+    <style>
+        /* Styles généraux pour les sections */
+        .messenger-sections {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
+
+        .messenger-sections h2 {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+
+        .request-item, .chat-item {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95em;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+
+        .request-item.pending { background-color: #ffe0b2; border-color: #ffcc80; } /* Orange clair pour en attente */
+        .request-item.accepted { background-color: #e6ffe6; border-color: #a3e6a3; } /* Vert clair pour accepté */
+        .request-item.rejected { background-color: #ffe6e6; border-color: #e6a3a3; } /* Rouge clair pour rejeté */
+        .request-item.cancelled { background-color: #f0f0f0; border-color: #cccccc; } /* Gris clair pour annulé */
+
+        .request-item p, .chat-item p {
+            margin: 0;
+            color: #333;
+            flex-grow: 1;
+        }
+        .request-item .status {
+            font-weight: bold;
+            text-transform: capitalize;
+            margin-left: 10px;
+            min-width: 80px; /* S'assurer que le texte de statut a suffisamment d'espace */
+            text-align: right;
+        }
+        .request-item .status.pending-text { color: #e65100; }
+        .request-item .status.accepted-text { color: #28a745; }
+        .request-item .status.rejected-text { color: #dc3545; }
+        .request-item .status.cancelled-text { color: #6c757d; }
+
+        .request-item .actions button, .chat-item .actions button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85em;
+            margin-left: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .request-item .actions .approve-btn { background-color: #28a745; color: white; }
+        .request-item .actions .approve-btn:hover { background-color: #218838; }
+        .request-item .actions .reject-btn { background-color: #dc3545; color: white; }
+        .request-item .actions .reject-btn:hover { background-color: #c82333; }
+        .request-item .actions .cancel-btn { background-color: #6c757d; color: white; }
+        .request-item .actions .cancel-btn:hover { background-color: #5a6268; }
+
+        .chat-item .actions .view-chat-btn {
+            background-color: #007bff;
+            color: white;
+        }
+        .chat-item .actions .view-chat-btn:hover {
+            background-color: #0056b3;
+        }
+        .chat-item .actions .chat-disabled-btn {
+            background-color: #cccccc;
+            color: #666;
+            cursor: not-allowed;
+        }
+
+        #footer {
+            display: flex;
+            justify-content: center;
+            flex-wrap: nowrap;
+            border-top: 2px solid gainsboro;
+            width: 90%;
+            gap: 15px;
+            padding-top: 10px;
+            margin-bottom: 20px;
+            z-index: 1;
+        }
+
+        #footer a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            text-decoration: none;
+            color: initial;
+            font-size: 3.9vw;
+        }
+
+        #footer a:hover {
+            color: #0467e0;
+        }
+
+        #span {
+            display: none;
+        }
+
+        @media ( min-width: 500px) {
+
+        .Accueil {
+            width: 80vw;
+        }
+
+        #footer {
+            position: absolute;
+            justify-content: flex-start;
+            flex-direction: column;
+            border-top: none;
+            border: 2px solid rgb(246, 244, 244);
+            width: 100px;
+            border-radius: 5px;
+            gap: 30px;
+            padding-top: 0;
+            top: 25%;
+            left: -120px;
+            transition: left 0.8s ease;
+        }
+
+        #footer a {
+            color: initial;
+            font-size: 20px;
+            padding: 4px;
+        }
+
+        #span {
+            background-color: rgb(242, 242, 242);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 25px;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transition: left 0.4s ease;
+        }
+
+        #span:hover {
+            background-color: #2b84f0;
+            font-size: 30px;
+            left: 10px;
+            color: white;
+        }
+
+        }
+    </style>
+</head>
+<body>
+
+    <section class="Profil">
+        <section class="sec11">
+            <i class="fas fa-arrow-left" onclick="window.history.back()"></i>
+            <h1>Messagerie & Demandes</h1>
+            <i class="fas fa"></i>
+        </section>
+    </section>
+
+    <section class="messenger">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <div class="messenger-sections">
+            <h2>Mes Demandes de Trajet</h2>
+            {% if passenger_requests %}
+                {% for request in passenger_requests %}
+                    <div class="request-item {{ request.status }}">
+                        <p>
+                            Demande pour le trajet de <strong>{{ request.ride_offer.departure_location }}</strong> à 
+                            <strong>{{ request.ride_offer.arrival_location }}</strong> (par {{ request.ride_offer.driver.username }})
+                        </p>
+                        <span class="status {{ request.status }}-text">{{ request.get_status_display }}</span>
+                        <div class="actions">
+                            {% if request.status == 'pending' %}
+                                <form action="{% url 'cancel_ride_request' request.id %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="cancel-btn">Annuler</button>
+                                </form>
+                            {% elif request.status == 'accepted' %}
+                                <form action="{% url 'cancel_ride_request' request.id %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="cancel-btn">Annuler ma place</button>
+                                </form>
+                            {% endif %}
+                            {% if request.status == 'accepted' and request.chat_access_granted %}
+                                <a href="{% url 'ride_chat' request.ride_offer.id %}" class="view-chat-btn">Accéder au chat</a> {# CORRECTION ICI #}
+                            {% else %}
+                                <button class="chat-disabled-btn" disabled>Chat non disponible</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p style="text-align: center; color: #666;">Vous n'avez pas de demandes de trajet en cours.</p>
+            {% endif %}
+        </div>
+
+        <div class="messenger-sections">
+            <h2>Chats de Trajet (Accès direct)</h2>
+            {% if accessible_chats %}
+                {% for chat_info in accessible_chats %}
+                    <div class="chat-item">
+                        <p>
+                            {% if chat_info.is_driver %}
+                                Mon trajet : <strong>{{ chat_info.departure_location }}</strong> à <strong>{{ chat_info.arrival_location }}</strong>
+                            {% else %}
+                                Trajet avec {{ chat_info.ride_offer.driver.username }}: <strong>{{ chat_info.departure_location }}</strong> à <strong>{{ chat_info.arrival_location }}</strong>
+                            {% endif %}
+                        </p>
+                        <div class="actions">
+                            {% if chat_info.chat_ready %}
+                                <a href="{% url 'ride_chat' chat_info.ride_id %}" class="view-chat-btn">Ouvrir le chat</a> {# CORRECTION ICI #}
+                            {% else %}
+                                <button class="chat-disabled-btn" disabled>Chat non prêt</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p style="text-align: center; color: #666;">Vous n'avez pas de chats de trajet accessibles pour le moment.</p>
+            {% endif %}
+        </div>
+
+    </section>
+
+    <span id="span">
+        <i class="fas fa-angle-right"></i>
+    </span>
+
+    <footer id="footer">
+        <a href="{% url 'Accueil' %}"><i class="fas fa-home"></i>Accueil</a>
+        <a href="{% url 'Rechercher' %}"><i class="fas fa-search"></i>Rechercher</a>
+        <a href="{% url 'Publier' %}"><i class="fas fa-plus-circle"></i>Publier</a>
+        <a href="{% url 'Messagerie' %}" class="active"><i class="fas fa-comment-alt"></i>Messagerie</a>
+        <a href="{% url 'Profil' %}"><i class="fas fa-user"></i>Profil</a>
+    </footer>
+
+    <body data-username="{{ request.user.username|default:'Anonyme'|escapejs }}">
+    <script src="{% static 'IFRI_comotorage/script4.js' %}"></script>
+    <script>
+        // Tout JS spécifique à la pré-messagerie peut aller ici, par exemple, pour gérer les mises à jour dynamiques
+        // Pour l'instant, il est principalement rendu côté serveur.
+    </script>
+</body>
+</html>
