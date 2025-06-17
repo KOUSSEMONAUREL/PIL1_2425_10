@@ -400,7 +400,7 @@
                             <h3>Trajet #{{ forloop.counter }}</h3>
                             <p>Départ : <strong>{{ ride.departure_location }}</strong></p>
                             <p>Arrivée : <strong>{{ ride.arrival_location }}</strong></p>
-                            <p>Date : <strong>{{ ride.departure_date|date:"d/m/Y" }}</strong></p> {# Ajout de la date du trajet #}
+                            <p>Date : <strong>{{ ride.departure_date|date:"d/m/Y" }}</strong></p> {# Affichage de la date du trajet #}
                             <p>Heure : <strong>{{ ride.departure_time|time:"H:i" }}</strong></p>
                             <p>Places restantes : <strong>{{ ride.remaining_seats }}</strong></p>
                         </div>
@@ -435,6 +435,10 @@
                             <div>
                                 {{ form.arrival_location.errors }}
                                 {{ form.arrival_location }}
+                            </div>
+                            <div>
+                                {{ form.departure_date.errors }} {# Rendu du champ de date ici #}
+                                {{ form.departure_date }} {# Ce champ est généré par Django avec le widget DateInput #}
                             </div>
                             <div>
                                 {{ form.departure_time.errors }}

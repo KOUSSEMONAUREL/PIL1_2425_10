@@ -1,4 +1,3 @@
-# IFRI_comotorage/models.py
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -56,7 +55,8 @@ class RideOffer(models.Model):
     arrival_latitude = models.FloatField(null=True, blank=True)
     arrival_longitude = models.FloatField(null=True, blank=True)
 
-    departure_date = models.DateField(default=timezone.now)
+    # Champ pour la date du trajet, avec la date du jour comme valeur par défaut
+    departure_date = models.DateField(default=timezone.now) 
     departure_time = models.TimeField(default=time(8, 0))
     available_seats = models.PositiveIntegerField(default=1)
     seats_taken = models.PositiveIntegerField(default=0)
