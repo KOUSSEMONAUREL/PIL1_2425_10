@@ -64,7 +64,7 @@ class RideOfferForm(forms.ModelForm):
         initial=timezone.now().date(),
         required=True
     )
-    # NOUVEAUX CHAMPS CACHÉS POUR LA PUBLICATION
+    
     departure_latitude = forms.FloatField(
         required=False, 
         widget=forms.HiddenInput()
@@ -96,7 +96,7 @@ class RideOfferForm(forms.ModelForm):
             'available_seats': forms.NumberInput(attrs={'class': 'input', 'placeholder': 'Nombre de places disponibles'}),
         }
 
-# Mise à jour du formset pour inclure les nouveaux champs de coordonnées
+
 RideOfferFormSet = inlineformset_factory(
     User, RideOffer, form=RideOfferForm,
     fields=[

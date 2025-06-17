@@ -8,7 +8,6 @@
     <link rel="shortcut icon" href="{% static 'IFRI_comotorage/images/car.png' %}" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins&family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    {# Styles pour Leaflet (carte interactive) #}
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         /* Styles généraux pour les sections */
@@ -392,7 +391,7 @@
     {# Scripts pour Leaflet (carte interactive) #}
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        // Script pour le pied de page mobile/desktop (inchangé)
+
         document.addEventListener('DOMContentLoaded', function() {
             const footer = document.getElementById('footer');
             const span = document.getElementById('span');
@@ -432,7 +431,7 @@
             });
         });
 
-        // --- Logique de la carte interactive ---
+            {% comment %} carte {% endcomment %}
         let map, marker;
         let currentFieldType = null;
 

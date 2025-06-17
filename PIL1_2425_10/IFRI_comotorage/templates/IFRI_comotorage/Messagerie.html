@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
@@ -10,7 +11,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'IFRI_comotorage/styles2.css' %}">
     <style>
-        /* Styles spécifiques pour la page de chat du trajet */
         .chat-header {
             background-color: #007bff;
             color: white;
@@ -29,10 +29,10 @@
             border-radius: 10px;
             padding: 15px;
             margin-bottom: 20px;
-            height: 60vh; /* Hauteur fixe pour le chat défilable */
+            height: 60vh;
             overflow-y: auto;
             display: flex;
-            flex-direction: column-reverse; /* Nouveaux messages en bas */
+            flex-direction: column-reverse;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
         .message-item {
@@ -46,20 +46,20 @@
         .my-message {
             background-color: #007bff;
             color: white;
-            align-self: flex-end; /* Aligner à droite */
+            align-self: flex-end;
             border-bottom-right-radius: 2px;
         }
         .other-message {
             background-color: #e2e6ea;
             color: #333;
-            align-self: flex-start; /* Aligner à gauche */
+            align-self: flex-start;
             border-bottom-left-radius: 2px;
         }
         .message-sender {
             font-weight: bold;
             font-size: 0.8em;
             margin-bottom: 3px;
-            color: rgba(255,255,255,0.8); /* Pour mes messages */
+            color: rgba(255,255,255,0.8);
         }
         .other-message .message-sender {
             color: #555;
@@ -231,18 +231,16 @@
         <a href="{% url 'Accueil' %}"><i class="fas fa-home"></i>Accueil</a>
         <a href="{% url 'Rechercher' %}"><i class="fas fa-search"></i>Rechercher</a>
         <a href="{% url 'Publier' %}"><i class="fas fa-plus-circle"></i>Publier</a>
-        <a href="{% url 'pre_messagerie' %}" class="active"><i class="fas fa-comment-alt"></i>Messagerie</a> {# Lien vers la page de pré-messagerie #}
+        <a href="{% url 'pre_messagerie' %}" class="active"><i class="fas fa-comment-alt"></i>Messagerie</a>
         <a href="{% url 'Profil' %}"><i class="fas fa-user"></i>Profil</a>
     </footer>
 
     <body data-username="{{ request.user.username|default:'Anonyme'|escapejs }}">
     <script>
-        // Passer l'ID du trajet à JavaScript
         const rideId = {{ ride_offer.id }};
-        const currentChatId = {{ chat_id }}; // Utiliser chat_id pour identifier le salon de discussion spécifique
+        const currentChatId = {{ chat_id }};
         const currentUser = document.body.dataset.username;
 
-        // Configuration WebSocket pour le chat spécifique au trajet
         const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/chat/" + currentChatId + "/");
 
         chatSocket.onopen = function (e) {
@@ -267,7 +265,7 @@
                 chatSocket.send(JSON.stringify({ 
                     'message': messageInput, 
                     'username': currentUser,
-                    'chat_id': currentChatId, // Envoyer chat_id avec le message
+                    'chat_id': currentChatId,
                 }));
                 document.querySelector("#id_message_send_input").value = "";
             }
@@ -286,26 +284,21 @@
                 messageItem.classList.add("other-message"); 
             }
 
-            // Créer l'élément de l'expéditeur
             const senderDiv = document.createElement("div");
             senderDiv.classList.add("message-sender");
             senderDiv.textContent = data.username;
             messageItem.appendChild(senderDiv);
 
-            // Créer l'élément de contenu du message
             const contentDiv = document.createElement("div");
             contentDiv.textContent = data.message;
             messageItem.appendChild(contentDiv);
 
-            // Créer l'élément d'horodatage
             const timestampDiv = document.createElement("div");
             timestampDiv.classList.add("message-timestamp");
-            // Formater l'horodatage - s'il est fourni par le serveur, l'utiliser, sinon utiliser l'heure actuelle
             const messageDate = data.timestamp ? new Date(data.timestamp) : new Date();
             timestampDiv.textContent = messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             messageItem.appendChild(timestampDiv);
 
-            // Insérer le nouveau message en haut (pour flex-direction: column-reverse)
             messageContainer.insertBefore(messageItem, messageContainer.firstChild);
         };
     </script>

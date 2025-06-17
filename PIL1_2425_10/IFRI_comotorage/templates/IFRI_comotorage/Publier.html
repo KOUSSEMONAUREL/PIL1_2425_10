@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
-        /* Styles généraux pour les sections */
         body {
             font-family: 'Open Sans', sans-serif;
             background-color: #f0f2f5;
@@ -26,7 +25,7 @@
             border-radius: 12px;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            padding-bottom: 20px; /* Espace pour le footer */
+            padding-bottom: 20px;
         }
 
         .publish-section {
@@ -35,7 +34,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
-            position: relative; /* Nécessaire pour le positionnement du bouton de suppression */
+            position: relative;
         }
 
         .publish-section h2 {
@@ -46,14 +45,14 @@
             padding-bottom: 10px;
         }
 
-        .publish-section .input { /* Utilisation de .input tel que défini dans les widgets de forms.py */
+        .publish-section .input {
             width: calc(100% - 20px);
             padding: 12px 10px;
             margin-bottom: 15px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 1em;
-            box-sizing: border-box; /* Inclure le padding dans la largeur */
+            box-sizing: border-box;
         }
 
         .publish-section .input:focus {
@@ -62,7 +61,6 @@
             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
         }
 
-        /* Styles spécifiques aux sections */
         .Publier .header {
             display: flex;
             justify-content: space-between;
@@ -92,8 +90,8 @@
 
         .Publier button[type="submit"] {
             display: block;
-            width: 90%; /* Largeur ajustée */
-            margin: 20px auto; /* Centré avec marges automatiques */
+            width: 90%;
+            margin: 20px auto;
             padding: 15px 20px;
             background-color: #007bff;
             color: white;
@@ -111,8 +109,8 @@
         }
 
         .message-box {
-            background-color: #ffe0b2; /* Orange clair pour l'avertissement */
-            color: #e65100; /* Orange plus foncé pour le texte */
+            background-color: #ffe0b2;
+            color: #e65100;
             padding: 15px;
             border-radius: 8px;
             margin: 20px 15px;
@@ -121,7 +119,6 @@
             box-shadow: 0 2px 8px rgba(255, 160, 0, 0.2);
         }
 
-        /* Styles pour le résumé des trajets publiés */
         .published-rides-list {
             padding: 0 15px;
             margin-bottom: 20px;
@@ -139,8 +136,8 @@
         }
 
         .published-ride-item {
-            background-color: #e6f7ff; /* Bleu clair */
-            border: 1px solid #91d5ff; /* Bordure bleu légèrement plus foncée */
+            background-color: #e6f7ff;
+            border: 1px solid #91d5ff;
             border-radius: 10px;
             padding: 15px;
             margin-bottom: 15px;
@@ -176,7 +173,7 @@
             width: 90%;
             margin: 20px auto;
             padding: 15px 20px;
-            background-color: #28a745; /* Vert pour ajouter */
+            background-color: #28a745;
             color: white;
             border: none;
             border-radius: 8px;
@@ -200,7 +197,7 @@
             right: 10px;
             background: none;
             border: none;
-            color: #dc3545; /* Rouge pour supprimer */
+            color: #dc3545;
             font-size: 1.5em;
             cursor: pointer;
             transition: transform 0.2s ease;
@@ -210,7 +207,6 @@
             transform: scale(1.1);
         }
 
-        /* Styles de message d'erreur pour les formulaires */
         .errorlist {
             color: #dc3545;
             font-size: 0.9em;
@@ -250,9 +246,8 @@
             display: none;
         }
 
-        /* Styles pour la section des demandes en attente */
         .pending-requests-section {
-            background-color: #fff3e0; /* Orange clair */
+            background-color: #fff3e0;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -298,7 +293,7 @@
         }
 
         .request-item .actions .approve-btn {
-            background-color: #28a745; /* Vert */
+            background-color: #28a745;
             color: white;
         }
         .request-item .actions .approve-btn:hover {
@@ -306,24 +301,23 @@
         }
 
         .request-item .actions .reject-btn {
-            background-color: #dc3545; /* Rouge */
+            background-color: #dc3545;
             color: white;
         }
         .request-item .actions .reject-btn:hover {
             background-color: #c82333;
         }
 
-        /* Styles pour l'intégration de la carte (modal) */
         .map-modal {
-            display: none; /* Caché par défaut */
+            display: none;
             position: fixed;
-            z-index: 1000; /* Par-dessus tout le reste */
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.7); /* Fond semi-transparent */
+            background-color: rgba(0,0,0,0.7);
             justify-content: center;
             align-items: center;
         }
@@ -334,7 +328,7 @@
             padding: 20px;
             border: 1px solid #888;
             width: 90%;
-            max-width: 800px; /* Taille maximale pour la carte */
+            max-width: 800px;
             border-radius: 10px;
             position: relative;
         }
@@ -354,7 +348,7 @@
         }
 
         #mapid {
-            height: 400px; /* Hauteur de la carte */
+            height: 400px;
             width: 100%;
             margin-top: 15px;
             border: 1px solid #ccc;
@@ -370,7 +364,7 @@
 
         .map-select-btn-confirm {
             padding: 8px 15px;
-            background-color: #17a2b8; /* Cyan */
+            background-color: #17a2b8;
             color: white;
             border: none;
             border-radius: 5px;
@@ -382,20 +376,19 @@
             background-color: #138496;
         }
 
-        /* Style pour l'input et le bouton carte alignés */
         .form-row-with-map {
             display: flex;
             align-items: center;
-            gap: 10px; /* Espacement entre l'input et le bouton */
+            gap: 10px;
             margin-bottom: 15px;
         }
         .form-row-with-map .input {
-            flex-grow: 1; /* L'input prend le reste de l'espace */
-            margin-bottom: 0; /* Réinitialiser la marge interne du .input */
+            flex-grow: 1;
+            margin-bottom: 0;
         }
-        .form-row-with-map .map-trigger-btn { /* Nouveau style pour les boutons "Carte" */
+        .form-row-with-map .map-trigger-btn {
             padding: 10px 12px;
-            background-color: #6c757d; /* Gris pour le bouton carte */
+            background-color: #6c757d;
             color: white;
             border: none;
             border-radius: 8px;
@@ -457,7 +450,6 @@
     }
 
 }
-
     </style>
 </head>
 <body>
@@ -552,16 +544,16 @@
                                 {{ form.departure_location }}
                                 <button type="button" class="map-trigger-btn" data-form-index="{{ forloop.counter0 }}" data-location-type="departure">Carte</button>
                             </div>
-                            {{ form.departure_latitude }} {# Champ caché #}
-                            {{ form.departure_longitude }} {# Champ caché #}
+                            {{ form.departure_latitude }}
+                            {{ form.departure_longitude }}
 
                             <div class="form-row-with-map">
                                 {{ form.arrival_location.errors }}
                                 {{ form.arrival_location }}
                                 <button type="button" class="map-trigger-btn" data-form-index="{{ forloop.counter0 }}" data-location-type="arrival">Carte</button>
                             </div>
-                            {{ form.arrival_latitude }} {# Champ caché #}
-                            {{ form.arrival_longitude }} {# Champ caché #}
+                            {{ form.arrival_latitude }}
+                            {{ form.arrival_longitude }}
 
                             <div>
                                 {{ form.departure_date.errors }} 
@@ -606,7 +598,6 @@
         <a href="{% url 'Profil' %}"><i class="fas fa-user"></i>Profil</a>
     </footer>
 
-    {# Conteneur du modal de la carte (ajouté en dehors de la section Publier) #}
     <div class="map-modal">
         <div class="map-modal-content">
             <span class="close-button">&times;</span>
@@ -617,10 +608,8 @@
         </div>
     </div>
 
-    {# Scripts pour Leaflet (carte interactive) #}
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        // Script pour le pied de page mobile/desktop (inchangé)
         document.addEventListener('DOMContentLoaded', function() {
             const footer = document.getElementById('footer');
             const span = document.getElementById('span');
@@ -660,19 +649,17 @@
             });
         });
 
-        // --- Logique de la carte interactive pour le Formset ---
         let map;
         let marker;
-        let currentFormIndex;   // Pour savoir quel formulaire du formset mettre à jour
-        let currentLocationType; // 'departure' ou 'arrival'
+        let currentFormIndex;
+        let currentLocationType;
 
-        // Références aux éléments du DOM du modal
         const mapModal = document.querySelector('.map-modal');
         const closeButton = mapModal.querySelector('.close-button');
         const confirmSelectionButton = mapModal.querySelector('#confirm-map-selection');
         const selectedLatSpan = mapModal.querySelector('#selected-lat');
         const selectedLonSpan = mapModal.querySelector('#selected-lon');
-        const mapidDiv = document.getElementById('mapid'); // Référence au conteneur de la carte
+        const mapidDiv = document.getElementById('mapid');
 
         closeButton.onclick = function() {
             console.log('Fermeture du modal de la carte.');
@@ -685,19 +672,16 @@
             }
         }
 
-        // Fonction pour gérer l'ouverture de la carte
         function openMapForSelection(formIndex, locationType) {
             console.log(`Ouverture de la carte pour le formulaire ${formIndex}, type: ${locationType}`);
             currentFormIndex = formIndex;
             currentLocationType = locationType;
-            mapModal.style.display = 'flex'; // Afficher le modal
+            mapModal.style.display = 'flex';
 
-            // Utiliser setTimeout pour s'assurer que le DOM a bien appliqué le display:flex
-            // avant d'initialiser ou d'invalider la carte.
             setTimeout(() => {
                 if (!map) {
                     console.log('Initialisation de la carte Leaflet...');
-                    const defaultLat = 6.3685; // Cotonou, Bénin
+                    const defaultLat = 6.3685;
                     const defaultLon = 2.4347;
                     map = L.map('mapid').setView([defaultLat, defaultLon], 13);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -707,10 +691,9 @@
                     console.log('Carte initialisée.');
                 } else {
                     console.log('Invalider la taille de la carte existante.');
-                    map.invalidateSize(); // Invalider la taille pour s'assurer que la carte est rendue correctement
+                    map.invalidateSize();
                 }
 
-                // Réinitialiser le marqueur et les coordonnées affichées
                 if (marker) {
                     map.removeLayer(marker);
                     marker = null;
@@ -718,7 +701,6 @@
                 selectedLatSpan.textContent = '';
                 selectedLonSpan.textContent = '';
 
-                // Charger les coordonnées existantes si elles existent pour ce champ spécifique
                 const latInput = document.getElementById(`id_ride-${currentFormIndex}-${currentLocationType}_latitude`);
                 const lonInput = document.getElementById(`id_ride-${currentFormIndex}-${currentLocationType}_longitude`);
 
@@ -726,14 +708,14 @@
                     const lat = parseFloat(latInput.value);
                     const lon = parseFloat(lonInput.value);
                     console.log(`Chargement des coordonnées existantes: Lat=${lat}, Lon=${lon}`);
-                    map.setView([lat, lon], 15); // Centrer la carte sur les coordonnées existantes
-                    marker = L.marker([lat, lon]).addTo(map); // Placer le marqueur
+                    map.setView([lat, lon], 15);
+                    marker = L.marker([lat, lon]).addTo(map);
                     selectedLatSpan.textContent = lat.toFixed(5);
                     selectedLonSpan.textContent = lon.toFixed(5);
                 } else {
                     console.log('Aucune coordonnée existante trouvée pour ce champ.');
                 }
-            }, 100); // Petit délai pour s'assurer du rendu du modal
+            }, 100);
         }
 
         function onMapClick(e) {
@@ -773,7 +755,6 @@
         });
 
 
-        // --- Logique du Formset Django (modifiée pour intégrer les boutons carte) ---
         const addMoreButton = document.getElementById('add-more-rides');
         const formsWrapper = document.getElementById('forms-wrapper');
         const totalForms = document.querySelector('#id_ride-TOTAL_FORMS');
@@ -794,7 +775,6 @@
         formTemplate.querySelectorAll('.map-trigger-btn').forEach(btn => {
             btn.removeAttribute('data-form-index');
             btn.removeAttribute('data-location-type');
-            // Pas besoin de removeEventListener ici, car c'est un clone frais.
         });
 
 
@@ -802,18 +782,15 @@
             formBlock.querySelectorAll('.map-trigger-btn').forEach(button => {
                 const formIndex = button.dataset.formIndex;
                 const locationType = button.dataset.locationType;
-                // S'assurer d'attacher l'événement une seule fois par bouton
-                button.onclick = null; // Supprime tout ancien gestionnaire pour éviter les doublons
+                button.onclick = null;
                 button.onclick = function() {
                     openMapForSelection(formIndex, locationType);
                 };
             });
         }
 
-        // Attacher les écouteurs aux formulaires initiaux au chargement
         formsWrapper.querySelectorAll('.ride-form-block').forEach(formBlock => {
             const formIndex = formBlock.id.split('-')[2];
-            // Assurez-vous que les data-attributs sont définis pour les boutons initiaux
             formBlock.querySelector('.map-trigger-btn[data-location-type="departure"]').dataset.formIndex = formIndex;
             formBlock.querySelector('.map-trigger-btn[data-location-type="arrival"]').dataset.formIndex = formIndex;
             attachMapButtonListeners(formBlock);
@@ -884,7 +861,6 @@
                     block.querySelectorAll('.map-trigger-btn').forEach(btn => {
                         btn.dataset.formIndex = newIndex;
                     });
-                    // Ré-attacher les écouteurs pour les formulaires réindexés
                     attachMapButtonListeners(block);
                 }
                 newIndex++;

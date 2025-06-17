@@ -16,9 +16,9 @@ from django.utils.timezone import now
 from django.utils import timezone
 from datetime import datetime, time, date
 
-# Fonction de calcul de distance Haversine
+
 def haversine_distance(lat1, lon1, lat2, lon2):
-    R = 6371  # Rayon de la Terre en kilomètres
+    R = 6371  
 
     lat1_rad = math.radians(lat1)
     lon1_rad = math.radians(lon1)
@@ -156,7 +156,7 @@ def Rechercher(request):
                 print(f"📏 Distance arrivée : {distance_arr:.2f} km")
 
                 if distance_dep <= 10 and distance_arr <= 20:
-                    # Filtrage directionnel (produit scalaire)
+                    # Filtrage directionnel 
                     user_vector = (a_lat - d_lat, a_lon - d_lon)
                     ride_vector = (ride.arrival_latitude - ride.departure_latitude,
                                    ride.arrival_longitude - ride.departure_longitude)
