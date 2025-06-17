@@ -1,6 +1,3 @@
-# Créez ce fichier dans votre application IFRI_comotorage
-# Par exemple: IFRI_comotorage/management/commands/create_missing_ride_chats.py
-
 from django.core.management.base import BaseCommand
 from IFRI_comotorage.models import RideOffer, RideChat
 

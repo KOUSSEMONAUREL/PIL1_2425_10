@@ -387,7 +387,8 @@ def cancel_ride_request(request, request_id):
 @login_required
 def messagerie(request, ride_id):
     ride_offer = get_object_or_404(RideOffer, id=ride_id)
-    chat = get_object_or_404(RideChat, ride_offer=ride_offer)
+
+    chat, created = RideChat.objects.get_or_create(ride_offer=ride_offer)  # <-- changement ici
 
     is_driver = (ride_offer.driver == request.user)
 
