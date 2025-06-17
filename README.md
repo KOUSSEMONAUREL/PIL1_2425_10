@@ -54,6 +54,37 @@ Permettre aux étudiants de proposer ou de rechercher des trajets partagés, gr�
 
 ---
 
-## 🗃️ Structure du projet
+## 🧭 Comment utiliser l’application (Guide utilisateur)
+Voici un guide simple des actions principales à réaliser sur le site IFRI Comotorage, avec les éléments sur lesquels cliquer :
 
-.....
+1. Login
+Clique sur “Login” (dans la barre de navigation en haut).
+Si tu n’as pas encore de compte, clique ensuite sur “Create”.
+Remplis le formulaire.
+
+2. 🏠 Accueil
+Une fois connecté, tu es automatiquement redirigé vers la page d’accueil.
+Tu peux y voir les rubriques How it works, About, Contact qui decrivent les informations générales a savoir sur ce site 
+
+4. 🔍 Rechercher 
+Clique sur “Rechercher” dans le menu.
+Utilise la barre de recherche.
+Clique sur une offre affichée pour en voir les détails.
+
+4. ➕ Publier 
+Va dans le menu “Publier”.
+Remplis le formulaire de création d’offre (départ, arrivée, date...).
+Valide pour que l’offre soit visible dans la liste.
+
+5. 💬 Messagerie
+Sur chaque offre, clique sur le bouton “Ouvrir le chat” 
+Cela ouvre une conversation privée.
+Tu peux envoyer des messages à partir du formulaire en bas.
+
+6. 👤 Profil
+Clique sur “Profil” pour voir tes informations et modifier au besoin. 
+
+
+
+
+
