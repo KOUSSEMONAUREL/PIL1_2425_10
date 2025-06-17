@@ -337,19 +337,21 @@
 
         <form method="get" class="form-container">
             {% csrf_token %}
-            
             <div class="form-row-with-map">
-                {{ form.search_location }} {# Le seul champ de recherche textuelle #}
-                <button type="button" class="map-select-btn-form">Carte</button> {# Bouton pour la carte #}
+                {{ form.depart }} 
+                <button type="button" class="map-trigger-btn" data-type="depart">Carte</button>
             </div>
-            {# Les champs cachés pour les coordonnées GPS #}
-            {{ form.search_latitude }}
-            {{ form.search_longitude }}
-            
-            {# Le champ de date a été retiré #}
+            {{ form.depart_lat }} {{ form.depart_lon }}
+
+            <div class="form-row-with-map">
+                {{ form.arrivee }}
+                <button type="button" class="map-trigger-btn" data-type="arrivee">Carte</button>
+            </div>
+            {{ form.arrivee_lat }} {{ form.arrivee_lon }}
 
             <button type="submit">Rechercher</button>
         </form>
+
 
         <section class="sec41">
             <h2>Trajets Disponibles</h2>
@@ -431,103 +433,66 @@
         });
 
         // --- Logique de la carte interactive ---
-        let map;
-        let marker;
+        let map, marker;
+        let currentFieldType = null;
 
         const mapModal = document.createElement('div');
         mapModal.className = 'map-modal';
         mapModal.innerHTML = `
             <div class="map-modal-content">
                 <span class="close-button">&times;</span>
-                <h2>Sélectionner un Emplacement sur la Carte</h2>
+                <h2>Sélectionner un lieu</h2>
                 <div id="mapid"></div>
-                <p class="map-coords-display">Lat: <span id="selected-lat"></span>, Lon: <span id="selected-lon"></span></p>
-                <button class="map-select-btn-confirm" id="confirm-map-selection">Confirmer la sélection</button>
+                <button id="confirm-map-selection">Confirmer</button>
             </div>
         `;
         document.body.appendChild(mapModal);
 
-        const closeButton = mapModal.querySelector('.close-button');
-        const confirmSelectionButton = mapModal.querySelector('#confirm-map-selection');
-        const selectedLatSpan = mapModal.querySelector('#selected-lat');
-        const selectedLonSpan = mapModal.querySelector('#selected-lon');
-        const searchLatInput = document.getElementById('id_search_latitude');
-        const searchLonInput = document.getElementById('id_search_longitude');
-        const searchLocationInput = document.getElementById('id_search_location');
+        document.querySelectorAll('.map-trigger-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentFieldType = btn.dataset.type;
+                mapModal.style.display = 'flex';
 
-        closeButton.onclick = function() {
-            mapModal.style.display = 'none';
-        }
-        window.onclick = function(event) {
-            if (event.target == mapModal) {
-                mapModal.style.display = 'none';
-            }
-        }
+                setTimeout(() => {
+                    if (!map) {
+                        map = L.map('mapid').setView([6.37, 2.43], 13);
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: 'Map data © OpenStreetMap contributors'
+                        }).addTo(map);
+                        map.on('click', onMapClick);
+                    } else {
+                        map.invalidateSize();
+                    }
 
-        document.querySelector('.map-select-btn-form').addEventListener('click', function() {
-            mapModal.style.display = 'flex';
-
-            if (!map) {
-                const defaultLat = 6.3685; // Cotonou, Bénin
-                const defaultLon = 2.4347;
-                map = L.map('mapid').setView([defaultLat, defaultLon], 13);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }).addTo(map);
-                map.on('click', onMapClick);
-            } else {
-                map.invalidateSize();
-            }
-
-            if (marker) {
-                map.removeLayer(marker);
-                marker = null;
-            }
-            selectedLatSpan.textContent = '';
-            selectedLonSpan.textContent = '';
-
-            // Si des coordonnées sont déjà présentes pour la recherche, centrer la carte et placer un marqueur
-            if (searchLatInput.value && searchLonInput.value) {
-                const lat = parseFloat(searchLatInput.value);
-                const lon = parseFloat(searchLonInput.value);
-                map.setView([lat, lon], 15);
-                marker = L.marker([lat, lon]).addTo(map);
-                selectedLatSpan.textContent = lat.toFixed(5);
-                selectedLonSpan.textContent = lon.toFixed(5);
-            }
+                    if (marker) {
+                        map.removeLayer(marker);
+                        marker = null;
+                    }
+                }, 100);
+            });
         });
 
         function onMapClick(e) {
-            if (marker) {
-                map.removeLayer(marker);
-            }
+            if (marker) map.removeLayer(marker);
             marker = L.marker(e.latlng).addTo(map);
-            selectedLatSpan.textContent = e.latlng.lat.toFixed(5);
-            selectedLonSpan.textContent = e.latlng.lng.toFixed(5);
         }
 
-        confirmSelectionButton.addEventListener('click', function() {
-            if (marker) {
-                const lat = marker.getLatLng().lat;
-                const lon = marker.getLatLng().lon;
+        document.getElementById('confirm-map-selection').addEventListener('click', () => {
+            if (!marker || !currentFieldType) return alert("Sélectionnez un point.");
 
-                searchLatInput.value = lat;
-                searchLonInput.value = lon;
-                
-                // Mettre à jour le champ texte visible avec une indication que la carte a été utilisée
-                // Cela ne remplace pas le texte saisi par l'utilisateur mais l'ajoute comme indice
-                if (searchLocationInput.value && !searchLocationInput.value.includes(" (carte)")) {
-                    searchLocationInput.value += " (carte)";
-                } else if (!searchLocationInput.value) {
-                    searchLocationInput.value = `Sélectionné sur carte (Lat: ${lat.toFixed(2)}, Lon: ${lon.toFixed(2)})`;
-                }
+            const lat = marker.getLatLng().lat;
+            const lon = marker.getLatLng().lng;
 
-            } else {
-                alert('Veuillez sélectionner un point sur la carte.');
+            document.getElementById(`id_${currentFieldType}_lat`).value = lat;
+            document.getElementById(`id_${currentFieldType}_lon`).value = lon;
+
+            const textInput = document.getElementById(`id_${currentFieldType}`);
+            if (textInput) {
+                textInput.value += " (carte)";
             }
+
             mapModal.style.display = 'none';
         });
-
     </script>
 </body>
 </html>

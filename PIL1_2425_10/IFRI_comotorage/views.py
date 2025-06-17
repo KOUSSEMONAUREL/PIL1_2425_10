@@ -7,11 +7,12 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.db import transaction 
 from django.db import models
-from .forms import RegisterForm, LoginForm, UserProfileForm, UserUpdateForm, RideOfferFormSet, RechercheForm
+from .forms import RegisterForm, LoginForm, UserProfileForm, UserUpdateForm, RideOfferFormSet, RechercheAvanceeForm
 from .models import Location, UserProfile, RideOffer, RideRequest, RideChat, ChatMessage
 from django.db.models import F
 from django.db.models import Q
 import math
+from django.utils.timezone import now
 from django.utils import timezone
 from datetime import datetime, time, date
 
@@ -100,76 +101,86 @@ def Accueil(request):
 
 @login_required
 def Rechercher(request):
-    rides = RideOffer.objects.all()
-    form = RechercheForm(request.GET or None)
-    
-    search_radius_km = 10 # Rayon de recherche de 10 km
+    from .forms import RechercheAvanceeForm
+    from .models import RideOffer
+    from django.db.models import Q
+    from django.utils import timezone
+    from math import radians, sin, cos, sqrt, atan2
 
-    # Filtrer les trajets déjà passés (date et heure)
-    today = timezone.now().date()
-    current_time = timezone.now().time()
-    rides = rides.filter(
+    def haversine_distance(lat1, lon1, lat2, lon2):
+        R = 6371
+        dlat = radians(lat2 - lat1)
+        dlon = radians(lon2 - lon1)
+        a = sin(dlat / 2) ** 2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon / 2) ** 2
+        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        return R * c
+
+    form = RechercheAvanceeForm(request.GET or None)
+    rides = RideOffer.objects.all()
+
+    # Exclure les trajets expirés
+    now_dt = timezone.now()
+    today = now_dt.date()
+    current_time = now_dt.time()
+
+    rides = RideOffer.objects.filter(
         Q(departure_date__gt=today) |
         Q(departure_date=today, departure_time__gte=current_time)
     )
 
-    if form.is_valid():
-        search_location_text = form.cleaned_data.get('search_location')
-        search_lat = form.cleaned_data.get('search_latitude')
-        search_lon = form.cleaned_data.get('search_longitude')
+    matched_rides = []
 
-        if search_location_text or (search_lat and search_lon):
-            filtered_rides = []
+    if form.is_valid():
+        d_lat = form.cleaned_data.get('depart_lat')
+        d_lon = form.cleaned_data.get('depart_lon')
+        a_lat = form.cleaned_data.get('arrivee_lat')
+        a_lon = form.cleaned_data.get('arrivee_lon')
+
+        print("🔍 Coordonnées utilisateur :")
+        print(f"Départ : ({d_lat}, {d_lon})")
+        print(f"Arrivée : ({a_lat}, {a_lon})")
+
+        if d_lat and d_lon and a_lat and a_lon:
             for ride in rides:
-                keep_ride = False
-                
-                # Prioriser la recherche par coordonnées GPS si disponibles
-                if search_lat and search_lon:
-                    # Vérifier si le point de départ du trajet est proche
-                    if ride.departure_latitude and ride.departure_longitude:
-                        distance_dep = haversine_distance(
-                            search_lat, search_lon,
-                            ride.departure_latitude, ride.departure_longitude
-                        )
-                        if distance_dep <= search_radius_km:
-                            keep_ride = True
-                    
-                    # Si pas encore gardé, vérifier si le point d'arrivée du trajet est proche
-                    if not keep_ride and ride.arrival_latitude and ride.arrival_longitude:
-                        distance_arr = haversine_distance(
-                            search_lat, search_lon,
-                            ride.arrival_latitude, ride.arrival_longitude
-                        )
-                        if distance_arr <= search_radius_km:
-                            keep_ride = True
-                
-                # Sinon, si seulement le texte est fourni, faire une recherche textuelle
-                elif search_location_text:
-                    if (search_location_text.lower() in ride.departure_location.lower() or
-                        search_location_text.lower() in ride.arrival_location.lower()):
-                        keep_ride = True
-                
-                if keep_ride:
-                    filtered_rides.append(ride)
-            
-            rides = filtered_rides
-        
-        # Convertir la liste en QuerySet si nécessaire pour les filtres suivants
-        if not isinstance(rides, models.QuerySet):
-            rides = RideOffer.objects.filter(id__in=[ride.id for ride in rides])
-        
-    # Exclure les trajets du conducteur actuel
-    if request.user.is_authenticated:
-        rides = rides.exclude(driver=request.user)
-    
-    # Filtrer uniquement les trajets avec des places restantes
-    rides = rides.filter(available_seats__gt=models.F('seats_taken'))
+                print("-----------")
+                print(f"🚗 Trajet : {ride.departure_location} → {ride.arrival_location}")
+
+                if ride.departure_latitude is None or ride.arrival_latitude is None:
+                    print("❌ Trajet ignoré (coordonnées absentes)")
+                    continue
+
+                distance_dep = haversine_distance(d_lat, d_lon, ride.departure_latitude, ride.departure_longitude)
+                distance_arr = haversine_distance(a_lat, a_lon, ride.arrival_latitude, ride.arrival_longitude)
+
+                print(f"📏 Distance départ : {distance_dep:.2f} km")
+                print(f"📏 Distance arrivée : {distance_arr:.2f} km")
+
+                if distance_dep <= 10 and distance_arr <= 20:
+                    # Filtrage directionnel (produit scalaire)
+                    user_vector = (a_lat - d_lat, a_lon - d_lon)
+                    ride_vector = (ride.arrival_latitude - ride.departure_latitude,
+                                   ride.arrival_longitude - ride.departure_longitude)
+                    dot_product = user_vector[0]*ride_vector[0] + user_vector[1]*ride_vector[1]
+                    print(f"➡️ Produit scalaire (direction) : {dot_product:.4f}")
+
+                    if dot_product > 0:
+                        print("✅ Match trouvé !")
+                        matched_rides.append(ride)
+                    else:
+                        print("⚠️ Direction différente, trajet ignoré.")
+                else:
+                    print("❌ Trop loin, trajet ignoré.")
+        else:
+            print("⚠️ Coordonnées manquantes")
+
+    else:
+        print("❌ Formulaire invalide")
+        print(form.errors)
 
     context = {
         'form': form,
-        'rides': rides,
-        # 'has_searched' est vrai si au moins un champ de recherche a été rempli et est valide
-        'has_searched': request.method == 'GET' and form.is_valid() and (form.cleaned_data.get('search_location') or form.cleaned_data.get('search_latitude') is not None),
+        'rides': matched_rides,
+        'has_searched': request.GET.get('depart') or request.GET.get('arrivee'),
     }
     return render(request, 'IFRI_comotorage/Rechercher.html', context)
 

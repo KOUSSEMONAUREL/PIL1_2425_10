@@ -123,3 +123,17 @@ class RechercheForm(forms.Form):
         required=False, 
         widget=forms.HiddenInput(attrs={'id': 'id_search_longitude'})
     )
+    
+class RechercheAvanceeForm(forms.Form):
+    depart = forms.CharField(
+        max_length=255, required=False,
+        widget=forms.TextInput(attrs={'class': 'input', 'placeholder': 'Adresse de départ'})
+    )
+    arrivee = forms.CharField(
+        max_length=255, required=False,
+        widget=forms.TextInput(attrs={'class': 'input', 'placeholder': 'Adresse d\'arrivée'})
+    )
+    depart_lat = forms.FloatField(required=False, widget=forms.HiddenInput(attrs={'id': 'id_depart_lat'}))
+    depart_lon = forms.FloatField(required=False, widget=forms.HiddenInput(attrs={'id': 'id_depart_lon'}))
+    arrivee_lat = forms.FloatField(required=False, widget=forms.HiddenInput(attrs={'id': 'id_arrivee_lat'}))
+    arrivee_lon = forms.FloatField(required=False, widget=forms.HiddenInput(attrs={'id': 'id_arrivee_lon'}))
