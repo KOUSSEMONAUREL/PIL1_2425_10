@@ -23,12 +23,20 @@
         </div>
       </nav>
 
+      <!-- Messages Django -->
+      {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
       <section class="login-form">
         <div class="card">
           <h1>Login</h1>
-          {% if message %}
-            <p style="color: red;">{{ message }}</p>
-          {% endif %}
           <form method="post" action="{% url 'Login' %}">
             {% csrf_token %}
             <div class="input-group">
@@ -39,20 +47,24 @@
                     >Username or Email</label
                   >
                 </div>
-                <span>
-                  <p class="mark">!</p>
-                  <p class="error-text" id="username_email_error">{{ form.username.errors }}</p>
-                </span>
+                {% if form.username.errors %}
+                  <span class="error-span">
+                    <p class="mark">!</p>
+                    <p class="error-text">{{ form.username.errors.0 }}</p>
+                  </span>
+                {% endif %}
               </div>
               <div class="password-input">
                 <div class="input-box">
                   {{ form.password }}
                   <label for="{{ form.password.id_for_label }}" class="input-label">Password</label>
                 </div>
-                <span>
-                  <p class="mark">!</p>
-                  <p class="error-text" id="password_error">{{ form.password.errors }}</p>
-                </span>
+                {% if form.password.errors %}
+                  <span class="error-span">
+                    <p class="mark">!</p>
+                    <p class="error-text">{{ form.password.errors.0 }}</p>
+                  </span>
+                {% endif %}
               </div>
             </div>
             <div class="check-element">
@@ -79,44 +91,48 @@
                   {{ reg_form.username }}
                   <label for="{{ reg_form.username.id_for_label }}" class="input-label">Username</label>
                 </div>
-                <span>
-                  {% if reg_form.username.errors %}
-                    {{ reg_form.username.errors }}
-                  {% endif %}
-                </span>
+                {% if reg_form.username.errors %}
+                  <span class="error-span">
+                    <p class="mark">!</p>
+                    <p class="error-text">{{ reg_form.username.errors.0 }}</p>
+                  </span>
+                {% endif %}
               </div>
               <div class="email-input">
                 <div class="input-box">
                   {{ reg_form.email }}
                   <label for="{{ reg_form.email.id_for_label }}" class="input-label">Email</label>
                 </div>
-                <span>
-                  {% if reg_form.email.errors %}
-                    {{ reg_form.email.errors }}
-                  {% endif %}
-                </span>
+                {% if reg_form.email.errors %}
+                  <span class="error-span">
+                    <p class="mark">!</p>
+                    <p class="error-text">{{ reg_form.email.errors.0 }}</p>
+                  </span>
+                {% endif %}
               </div>
               <div class="password-input">
                 <div class="input-box">
                   {{ reg_form.password1 }}
                   <label for="{{ reg_form.password1.id_for_label }}" class="input-label">Password</label>
                 </div>
-                <span>
-                  {% if reg_form.password1.errors %}
-                    {{ reg_form.password1.errors }}
-                  {% endif %}
-                </span>
+                {% if reg_form.password1.errors %}
+                  <span class="error-span">
+                    <p class="mark">!</p>
+                    <p class="error-text">{{ reg_form.password1.errors.0 }}</p>
+                  </span>
+                {% endif %}
               </div>
               <div class="password-input">
                 <div class="input-box">
                   {{ reg_form.password2 }}
                   <label for="{{ reg_form.password2.id_for_label }}" class="input-label">Confirm Password</label>
                 </div>
-                <span>
-                  {% if reg_form.password2.errors %}
-                    {{ reg_form.password2.errors }}
-                  {% endif %}
-                </span>
+                {% if reg_form.password2.errors %}
+                  <span class="error-span">
+                    <p class="mark">!</p>
+                    <p class="error-text">{{ reg_form.password2.errors.0 }}</p>
+                  </span>
+                {% endif %}
               </div>
             </div>
             <div class="check-element">
@@ -132,6 +148,7 @@
         </div>
       </section>
 
+      <!-- Reste de vos sections... -->
       <section class="welcome-form" style="display: none;">
         <div class="card" id="welcome_card">
           <h1>Welcome, <span id="name_output">{% if request.user.is_authenticated %}{{ request.user.username }}{% else %}name{% endif %}</span></h1>

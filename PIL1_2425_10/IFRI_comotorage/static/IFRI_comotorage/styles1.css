@@ -375,3 +375,98 @@ input[type="checkbox"]:checked:after {
 .card .errorlist li {
     margin-bottom: 5px;
 }
+
+/* Corrections CSS pour la gestion des erreurs */
+
+/* Messages Django */
+.messages {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 400px;
+}
+
+.alert {
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+}
+
+.alert-info {
+    background-color: #cce7ff;
+    border: 1px solid #b3d9ff;
+    color: #004085;
+}
+
+.error-span {
+    display: none;
+}
+
+.input-group .username-email-input:has(.errorlist) .error-span,
+.input-group .username-input:has(.errorlist) .error-span,
+.input-group .email-input:has(.errorlist) .error-span,
+.input-group .password-input:has(.errorlist) .error-span {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.input-group .input-box:has(.errorlist) .input {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.error-text {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin: 0;
+    margin-left: 5px;
+}
+
+.mark {
+    color: #dc3545;
+    font-weight: bold;
+    margin: 0;
+    margin-right: 3px;
+}
+
+.input {
+    border: 2px solid #e1e5e9;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: 0;
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.messages .alert {
+    animation: fadeOut 5s forwards;
+}
