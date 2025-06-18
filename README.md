@@ -1,5 +1,9 @@
 # 🚗 IFRI_comotorage
 
+
+![Covoiturage](https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Carsharing_icon.svg/1024px-Carsharing_icon.svg.png)
+
+
 **Plateforme de covoiturage destinée aux étudiants de l'IFRI - Université d’Abomey-Calavi**
 
 ## 🎯 Objectif du projet
