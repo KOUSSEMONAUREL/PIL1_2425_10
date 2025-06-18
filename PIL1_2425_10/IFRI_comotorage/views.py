@@ -7,6 +7,8 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.db import transaction 
 from django.db import models
+# Import the ModelBackend explicitly
+from django.contrib.auth.backends import ModelBackend
 from .forms import RegisterForm, LoginForm, UserProfileForm, UserUpdateForm, RideOfferFormSet, RechercheAvanceeForm
 from .models import Location, UserProfile, RideOffer, RideRequest, RideChat, ChatMessage
 from django.db.models import F
@@ -48,10 +50,12 @@ def Login(request):
             username_or_email = form.cleaned_data['username']
             password = form.cleaned_data['password']
 
+            # Ensure 'backend' is passed if multiple backends are configured
             user = authenticate(request, username=username_or_email, password=password)
 
             if user is not None:
-                login(request, user)
+                # Explicitly specify the backend if multiple are configured
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend') 
                 messages.success(request, f'Bonjour, {user.username}! Vous êtes connecté.')
                 return redirect('Accueil')
             else:
@@ -72,7 +76,8 @@ def register(request):
 
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            # MODIFICATION ICI : Spécifier le backend d'authentification
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, "Inscription réussie et connexion automatique !")
             return redirect('Accueil')
         else:
@@ -439,22 +444,10 @@ def profile_config(request):
         profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
 
         if user_form.is_valid() and profile_form.is_valid():
-            
             user_form.save()
-            
             profile_form.save()
             messages.success(request, 'Votre profil a été mis à jour avec succès!')
             return redirect('Profil')
-        else:
-            
-            if not user_form.is_valid():
-                for field, errors in user_form.errors.items():
-                    for error in errors:
-                        messages.error(request, f"Erreur {field}: {error}")
-            if not profile_form.is_valid():
-                for field, errors in profile_form.errors.items():
-                    for error in errors:
-                        messages.error(request, f"Erreur {field}: {error}")
     else:
         user_form = UserUpdateForm(instance=request.user)
         profile_form = UserProfileForm(instance=profile)
@@ -466,7 +459,6 @@ def profile_config(request):
         'profile': profile
     }
     return render(request, 'IFRI_comotorage/profile_config.html', context)
-
 
 def save_location(request):
     if request.method == 'POST':
