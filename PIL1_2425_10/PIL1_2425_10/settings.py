@@ -41,8 +41,53 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'IFRI_comotorage',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     'channels',
 ]
+
+# monprojet/settings.py
+
+SITE_ID = 1 # Important pour allauth
+
+AUTHENTICATION_BACKENDS = [
+    
+    'django.contrib.auth.backends.ModelBackend',
+
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+ACCOUNT_EMAIL_REQUIRED = True 
+ACCOUNT_USERNAME_REQUIRED = False 
+
+ACCOUNT_LOGIN_METHODS = ['email'] 
+ACCOUNT_SIGNUP_FIELDS = ['email'] 
+ACCOUNT_UNIQUE_EMAIL = True 
+
+
+ACCOUNT_EMAIL_VERIFICATION = 'none' 
+LOGIN_REDIRECT_URL = '/Accueil/' 
+ACCOUNT_LOGOUT_REDIRECT_URL = '/Login/' 
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': '435335301769-e45lpfnmtqsi53u7q6kmvff6l59hk568.apps.googleusercontent.com',
+            'secret': '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',       
+            'key': '' 
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
 
 ASGI_APPLICATION = 'PIL1_2425_10.asgi.application'
 
@@ -54,6 +99,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'PIL1_2425_10.urls'
