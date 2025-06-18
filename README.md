@@ -8,7 +8,6 @@ IFRI_comotorage est une application web visant à faciliter les trajets partagé
 
 Ce projet s’inscrit dans le cadre du **Projet Intégrateur 2024-2025** de la 1ère année de Licence à l’IFRI.
 
----
 
 ## 🧑‍💻 Équipe projet — Groupe PIL1_2425_[NUMÉRO_DU_GROUPE]
 
@@ -19,7 +18,6 @@ Ce projet s’inscrit dans le cadre du **Projet Intégrateur 2024-2025** de la 1
 - **SI1** : ADJAGBA Océane Adégnika
 - **SI1** : KOUSSEMON Godwill Aurel Sèdjro
 
----
 
 ## 🗂️ Organisation et Méthodologie
 
@@ -27,8 +25,7 @@ Ce projet s’inscrit dans le cadre du **Projet Intégrateur 2024-2025** de la 1
 - **Méthodologie** : travail collaboratif par répartition des rôles (backend, frontend, base de données, documentation)
 - **Suivi** : points réguliers sur Trello et commits Git fréquents de chaque membre
 - **Encadrement** : M. Armand ACCROMBESSI, Mme Maryse GAHOU, M. Ratheil HOUNDJI
-
----
+  
 
 ## 🧩 Fonctionnalités principales
 
@@ -57,7 +54,6 @@ Ce projet s’inscrit dans le cadre du **Projet Intégrateur 2024-2025** de la 1
 - Conception mobile-first
 - Navigation intuitive, ergonomique et moderne
 
----
 
 ## 🛠️ Technologies utilisées
 
@@ -70,7 +66,6 @@ Ce projet s’inscrit dans le cadre du **Projet Intégrateur 2024-2025** de la 1
 | Authentification | Django-Allauth, Systeme local         |
 | Environnement    | Python-dotenv, Environ                |
 
----
 
 ## 🧭 Guide utilisateur
 
@@ -96,7 +91,6 @@ Ce projet s’inscrit dans le cadre du **Projet Intégrateur 2024-2025** de la 1
 
    - Modification de tes infos à tout moment
 
----
 
 ## 🛠️ Déploiement local (mode développeur)
 
@@ -114,20 +108,19 @@ cd IFRI_comotorage/
 python -m venv venv
 source venv/bin/activate   # ou venv\Scripts\activate sous Windows
 pip install -r requirements.txt
-```
+
 
 ### ⚙️ Configuration
 
 Crée un fichier `.env` :
 
-```
 SECRET_KEY=votre_clé_django
 DEBUG=True
 DB_NAME=ifri_comotorage
 DB_USER=root
 DB_PASSWORD=mot_de_passe
 DB_HOST=localhost
-```
+
 
 ### 🗃️ Base de données
 
@@ -146,7 +139,6 @@ python manage.py runserver
 
 Accède à l’application via [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
----
 
 ## 🧱 Structure du projet
 
@@ -213,11 +205,8 @@ Accède à l’application via [http://127.0.0.1:8000](http://127.0.0.1:8000)
     └── manage.py
     └── requirements.txt
 
-```
 
-```
 
----
 
 ## 💾 Base de données
 
@@ -226,14 +215,14 @@ Le fichier `database.sql` contient :
 - Création des tables `UserProfile`, `Trajet`, `Message`, etc.
 - Contraintes d'intégrité (liens FK, clés uniques...)
 
----
+
 
 ## 📊 Diagrammes & Modèles
 
 - **Modèle relationnel** : disponible dans `doc/diagramme_bd.png`
 - **DFD et cas d’utilisation** : fournis dans le rapport technique
 
----
+
 
 ## 📚 Annexes
 
@@ -242,7 +231,7 @@ Le fichier `database.sql` contient :
 - Manuel d’utilisation
 - Cahier de charges initial disponible en PDF
 
----
+
 
 ## ✅ Respect du cahier des charges
 
@@ -252,7 +241,7 @@ Le fichier `database.sql` contient :
 - ✅ Interface responsive
 - ✅ Collaboration Git/GitHub complète
 
----
+
 
 ## 📅 Dates clés
 
@@ -260,7 +249,7 @@ Le fichier `database.sql` contient :
 - Design final : 6 juin 2025
 - Livraison : 18 juin 2025
 
----
+
 
 ## 🪪 Licence
 
