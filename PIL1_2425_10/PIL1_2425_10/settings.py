@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from environ import Env
+
+env = Env()
+env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +32,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ["https://adf5-137-255-40-184.ngrok-free.app"]
+CSRF_TRUSTED_ORIGINS = ["https://9db7-137-255-56-238.ngrok-free.app"]
 
 # Application definition
 
@@ -72,11 +76,14 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 LOGIN_REDIRECT_URL = '/Accueil/' 
 ACCOUNT_LOGOUT_REDIRECT_URL = '/Login/' 
 
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': '435335301769-e45lpfnmtqsi53u7q6kmvff6l59hk568.apps.googleusercontent.com',
-            'secret': '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',       
+            'client_id': env('OAUTH_GOOGLE_CLIENT_ID'),
+            'secret': env('OAUTH_GOOGLE_SECRET'),
             'key': '' 
         },
         'SCOPE': [
@@ -88,6 +95,8 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 ASGI_APPLICATION = 'PIL1_2425_10.asgi.application'
 
@@ -107,7 +116,7 @@ ROOT_URLCONF = 'PIL1_2425_10.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'PIL1_2425_10', 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'IFRI_comotorage', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
