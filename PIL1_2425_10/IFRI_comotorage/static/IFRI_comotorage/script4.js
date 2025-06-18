@@ -3,13 +3,36 @@ document.addEventListener('DOMContentLoaded', function() {
     const toggleBtn = document.getElementById('span');
     const sidebar = document.getElementById('footer');
     let hideSidebarTimeout;
+    let autoHideTimeout;
+
+    const autoHideFooter = () => {
+        if (!window.matchMedia("(min-width: 500px)").matches) {
+            autoHideTimeout = setTimeout(() => {
+                sidebar.classList.add('hidden');
+                toggleBtn.classList.add('visible');
+                toggleBtn.innerHTML = '<i class="fas fa-angle-up"></i>';
+            }, 3000); 
+        }
+    };
+
+    const showFooter = () => {
+        clearTimeout(autoHideTimeout);
+        sidebar.classList.remove('hidden');
+        toggleBtn.classList.remove('visible');
+    };
+
+    const hideFooter = () => {
+        sidebar.classList.add('hidden');
+        toggleBtn.classList.add('visible');
+        toggleBtn.innerHTML = '<i class="fas fa-angle-up"></i>';
+    };
 
     if (window.matchMedia("(min-width: 500px)").matches) {
         const showSidebar = () => {
             clearTimeout(hideSidebarTimeout);
             sidebar.style.left = '0';
             toggleBtn.innerHTML = '<i class="fas fa-angle-left"></i>';
-            toggleBtn.style.left = '100px';
+            toggleBtn.style.left = '120px';
         };
 
         const hideSidebar = () => {
@@ -17,15 +40,66 @@ document.addEventListener('DOMContentLoaded', function() {
                 sidebar.style.left = '-120px';
                 toggleBtn.innerHTML = '<i class="fas fa-angle-right"></i>';
                 toggleBtn.style.left = '0';
-            }, 200);
+            }, 300);
         };
 
         toggleBtn.addEventListener('mouseenter', showSidebar);
         toggleBtn.addEventListener('mouseleave', hideSidebar);
-
         sidebar.addEventListener('mouseenter', showSidebar);
         sidebar.addEventListener('mouseleave', hideSidebar);
+
+        toggleBtn.addEventListener('click', () => {
+            if (sidebar.style.left === '0px') {
+                hideSidebar();
+            } else {
+                showSidebar();
+            }
+        });
+    } else {
+        
+        autoHideFooter();
+
+        toggleBtn.addEventListener('click', () => {
+            if (sidebar.classList.contains('hidden')) {
+                showFooter();
+                autoHideFooter(); 
+            } else {
+                hideFooter();
+            }
+        });
+
+        sidebar.addEventListener('touchstart', () => {
+            clearTimeout(autoHideTimeout);
+        });
+
+        sidebar.addEventListener('touchend', () => {
+            autoHideTimeout = setTimeout(() => {
+                hideFooter();
+            }, 3000);
+        });
     }
+
+    window.addEventListener('resize', () => {
+        clearTimeout(autoHideTimeout);
+        clearTimeout(hideSidebarTimeout);
+        
+        if (window.matchMedia("(min-width: 500px)").matches) {
+            
+            sidebar.classList.remove('hidden');
+            toggleBtn.classList.remove('visible');
+            sidebar.style.left = '-120px';
+            toggleBtn.style.left = '0';
+            toggleBtn.innerHTML = '<i class="fas fa-angle-right"></i>';
+        } else {
+            
+            sidebar.style.left = '';
+            toggleBtn.style.left = '';
+            sidebar.classList.remove('hidden');
+            toggleBtn.classList.remove('visible');
+            autoHideFooter();
+        }
+    });
+    
 
     // Gestion de l'affichage conditionnel des erreurs
     function showErrorsOnlyWhenNeeded() {

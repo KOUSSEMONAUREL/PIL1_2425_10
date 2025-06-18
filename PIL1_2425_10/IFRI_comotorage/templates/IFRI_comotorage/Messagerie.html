@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
@@ -10,26 +9,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins&family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'IFRI_comotorage/styles2.css' %}">
+    <link rel="stylesheet" href="{% static 'IFRI_comotorage/styles3.css' %}">
     <style>
-        .chat-header {
-            background-color: #007bff;
-            color: white;
-            padding: 15px;
+
+        .messenger {
+            height: 100vh;
+        }
+
+        .sec11 div {
             text-align: center;
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
-            margin-bottom: 20px;
         }
-        .chat-header h1 {
-            margin: 0;
-            font-size: 1.4em;
+
+        .sec11 div p {
+            font-size: 18px;
+            font-weight: bold;
         }
+
         .chat-messages {
-            background-color: #f8f9fa;
+            background-color:rgb(235, 241, 247);
             border-radius: 10px;
             padding: 15px;
-            margin-bottom: 20px;
-            height: 60vh;
+            margin-bottom: 60px;
+            height: 100vh;
+            width: 95%;
             overflow-y: auto;
             display: flex;
             flex-direction: column-reverse;
@@ -39,9 +41,12 @@
             padding: 8px 12px;
             margin-bottom: 8px;
             border-radius: 15px;
+            text-align: left;
+            min-width: 30%;
             max-width: 70%;
             word-wrap: break-word;
             line-height: 1.4;
+            font-size: 20px;
         }
         .my-message {
             background-color: #007bff;
@@ -109,86 +114,13 @@
             background-color: #0056b3;
         }
 
-        #footer {
-            display: flex;
-            justify-content: center;
-            flex-wrap: nowrap;
-            border-top: 2px solid gainsboro;
-            width: 90%;
-            gap: 15px;
-            padding-top: 10px;
-            margin-bottom: 20px;
-            z-index: 1;
+        @media (max-width: 900px) {
+
+            .message-item {
+            font-size: 3vw;
+        }
         }
 
-        #footer a {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-around;
-            text-decoration: none;
-            color: initial;
-            font-size: 3.9vw;
-        }
-
-        #footer a:hover {
-            color: #0467e0;
-        }
-
-        #span {
-            display: none;
-        }
-
-        @media ( min-width: 500px) {
-
-        .Accueil {
-            width: 80vw;
-        }
-
-        #footer {
-            position: absolute;
-            justify-content: flex-start;
-            flex-direction: column;
-            border-top: none;
-            border: 2px solid rgb(246, 244, 244);
-            width: 100px;
-            border-radius: 5px;
-            gap: 30px;
-            padding-top: 0;
-            top: 25%;
-            left: -120px;
-            transition: left 0.8s ease;
-        }
-
-        #footer a {
-            color: initial;
-            font-size: 20px;
-            padding: 4px;
-        }
-
-        #span {
-            background-color: rgb(242, 242, 242);
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 25px;
-            position: absolute;
-            top: 50%;
-            left: 0;
-            transition: left 0.4s ease;
-        }
-
-        #span:hover {
-            background-color: #2b84f0;
-            font-size: 30px;
-            left: 10px;
-            color: white;
-        }
-
-        }
     </style>
 </head>
 <body>
@@ -196,17 +128,15 @@
     <section class="Profil">
         <section class="sec11">
             <i class="fas fa-arrow-left" onclick="window.history.back()"></i>
-            <h1>Chat du Trajet</h1>
+            <div>
+                <h1>Chat du Trajet : {{ ride_offer.departure_location }} &rarr; {{ ride_offer.arrival_location }}</h1>
+                <p>Conducteur : {{ ride_offer.driver.username }}</p>
+            </div>
             <i class="fas fa"></i>
         </section>
     </section>
 
     <section class="messenger">
-        <div class="chat-header">
-            <h1>Trajet : {{ ride_offer.departure_location }} &rarr; {{ ride_offer.arrival_location }}</h1>
-            <p>Conducteur : {{ ride_offer.driver.username }}</p>
-        </div>
-
         <div class="chat-messages" id="id_chat_item_container">
             {% for message in messages %}
                 <div class="message-item {% if message.sender.username == current_user_username %}my-message{% else %}other-message{% endif %}">
@@ -222,18 +152,6 @@
             <button type="submit" id="id_message_send_button"><i class="fas fa-paper-plane"></i></button>
         </div>
     </section>
-
-    <span id="span">
-        <i class="fas fa-angle-right"></i>
-    </span>
-
-    <footer id="footer">
-        <a href="{% url 'Accueil' %}"><i class="fas fa-home"></i>Accueil</a>
-        <a href="{% url 'Rechercher' %}"><i class="fas fa-search"></i>Rechercher</a>
-        <a href="{% url 'Publier' %}"><i class="fas fa-plus-circle"></i>Publier</a>
-        <a href="{% url 'pre_messagerie' %}" class="active"><i class="fas fa-comment-alt"></i>Messagerie</a>
-        <a href="{% url 'Profil' %}"><i class="fas fa-user"></i>Profil</a>
-    </footer>
 
     <body data-username="{{ request.user.username|default:'Anonyme'|escapejs }}">
     <script>

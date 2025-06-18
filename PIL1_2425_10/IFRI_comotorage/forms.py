@@ -11,28 +11,28 @@ class RegisterForm(forms.ModelForm):
         required=True, 
         widget=forms.TextInput(attrs={
             'class': 'input', 
-            'placeholder': 'Nom d\'utilisateur'
+            'placeholder': ''
         })
     )
     email = forms.EmailField(
         required=True, 
         widget=forms.EmailInput(attrs={
             'class': 'input', 
-            'placeholder': 'Email'
+            'placeholder': ''
         })
     )
     password1 = forms.CharField(
         label='Mot de passe',
         widget=forms.PasswordInput(attrs={
             'class': 'input', 
-            'placeholder': 'Mot de passe'
+            'placeholder': ''
         })
     )
     password2 = forms.CharField(
         label='Confirmer le mot de passe', 
         widget=forms.PasswordInput(attrs={
             'class': 'input', 
-            'placeholder': 'Confirmer le mot de passe'
+            'placeholder': ''
         })
     )
 
@@ -72,38 +72,82 @@ class LoginForm(forms.Form):
         required=True, 
         widget=forms.TextInput(attrs={
             'class': 'input', 
-            'placeholder': 'Nom d\'utilisateur ou Email'
+            'placeholder': ''
         })
     )
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'input', 
-            'placeholder': 'Mot de passe'
+            'placeholder': ''
         })
     )
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+        widgets = {
+            'first_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Votre prénom'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Votre nom'
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'votre.email@exemple.com'
+            }),
+        }
+        labels = {
+            'first_name': 'Prénom',
+            'last_name': 'Nom',
+            'email': 'Email',
+        }
+
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['adresse_depart', 'horaire_debut', 'horaire_fin', 'nombre_places', 'photo_profil', 'type_utilisateur', 'telephone']
+        fields = ['photo_profil', 'type_utilisateur', 'adresse_depart', 
+                 'horaire_debut', 'horaire_fin', 'nombre_places', 'telephone']
         widgets = {
-            'adresse_depart': forms.TextInput(attrs={'class': 'input', 'placeholder': 'Adresse de départ préférée'}),
-            'horaire_debut': forms.TimeInput(attrs={'class': 'input', 'type': 'time'}),
-            'horaire_fin': forms.TimeInput(attrs={'class': 'input', 'type': 'time'}),
-            'nombre_places': forms.NumberInput(attrs={'class': 'input', 'placeholder': 'Nombre de places'}),
-            'photo_profil': forms.ClearableFileInput(attrs={'class': 'input'}),
-            'type_utilisateur': forms.Select(attrs={'class': 'input'}),
-            'telephone': forms.TextInput(attrs={'class': 'input', 'placeholder': 'Numéro de téléphone'}),
+            'photo_profil': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*'
+            }),
+            'type_utilisateur': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'adresse_depart': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Votre adresse de départ habituelle'
+            }),
+            'horaire_debut': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time'
+            }),
+            'horaire_fin': forms.TimeInput(attrs={
+                'class': 'form-control',
+                'type': 'time'
+            }),
+            'nombre_places': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'min': '1',
+                'max': '8'
+            }),
+            'telephone': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '+229 XX XX XX XX'
+            }),
         }
-
-class UserUpdateForm(forms.ModelForm):
-    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'input'}))
-    
-    class Meta:
-        model = User
-        fields = ['username', 'email']
-        widgets = {
-            'username': forms.TextInput(attrs={'class': 'input'}),
-            'email': forms.EmailInput(attrs={'class': 'input'}),
+        labels = {
+            'photo_profil': 'Photo de profil',
+            'type_utilisateur': 'Type d\'utilisateur',
+            'adresse_depart': 'Adresse de départ habituelle',
+            'horaire_debut': 'Horaire de début habituel',
+            'horaire_fin': 'Horaire de fin habituel',
+            'nombre_places': 'Nombre de places disponibles',
+            'telephone': 'Téléphone',
         }
 
 class RideOfferForm(forms.ModelForm):

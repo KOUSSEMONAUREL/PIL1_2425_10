@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+from environ import Env
+from dotenv import load_dotenv
+
+env = Env()
+env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,7 +33,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ["https://adf5-137-255-40-184.ngrok-free.app"]
+CSRF_TRUSTED_ORIGINS = ["https://fa60-137-255-56-238.ngrok-free.app"]
 
 # Application definition
 
@@ -72,11 +77,14 @@ ACCOUNT_EMAIL_VERIFICATION = 'none'
 LOGIN_REDIRECT_URL = '/Accueil/' 
 ACCOUNT_LOGOUT_REDIRECT_URL = '/Login/' 
 
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': '435335301769-e45lpfnmtqsi53u7q6kmvff6l59hk568.apps.googleusercontent.com',
-            'secret': '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',       
+            'client_id': env('OAUTH_GOOGLE_CLIENT_ID'),
+            'secret': env('OAUTH_GOOGLE_SECRET'),
             'key': '' 
         },
         'SCOPE': [
@@ -88,6 +96,11 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+# if DEBUG:
+#     SOCIALACCOUNT_PROVIDERS = {}
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 ASGI_APPLICATION = 'PIL1_2425_10.asgi.application'
 
@@ -107,7 +120,7 @@ ROOT_URLCONF = 'PIL1_2425_10.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'PIL1_2425_10', 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'IFRI_comotorage', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -140,11 +153,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'comotorage',
-        'USER': 'default',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': os.getenv('DB_NAME'), 
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
         'OPTIONS' : {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
             'charset': 'utf8mb4',
@@ -197,3 +210,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Configuration pour les uploads
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024   # 10MB
