@@ -1,4 +1,5 @@
-1. Introduction
+1. INTRODUCTION
+
 Dans le cadre de notre formation, nous avons conçu et développé une application web permettant
 aux élèves de notre établissement de pratiquer le covoiturage lorsqu’ils partagent le même 
 tronçon de trajet. L’objectif est de réduire les coûts de transport, désengorger le trafic et 
@@ -9,14 +10,19 @@ des trajets domicile-campus.
 
 
 
-2. Équipe de projet
+2. ÉQUIPE DE PROJET
 Notre groupe est composé de six membres :
 
 -GL1 : BIDIBI Emeline-Nellie
+
 -IA1 : KUISSOPA-MANTE Vernon Dabawi
+
 -IM1 : HOUANNOU Marcos Primaël
+
 -SEIOT1 : ZOSSOU Crédo Fréjus
+
 -SI1 : ADJAGBA Océane Adégnika
+
 -SI1 : KOUSSEMON Godwill Aurel Sèdjro
 
 Au départ, aucun de nous ne se connaissait personnellement. La cohésion du groupe s’est donc construite progressivement grâce à une communication ouverte, des réunions régulières et une répartition claire des rôles selon les compétences
@@ -28,7 +34,8 @@ appris l’importance de l’écoute, de la confiance et du respect mutuel pour 
 
 
 
-3. Cahier des charges
+3. CAHIER DES CHARGES 
+
 Objectifs principaux :
 
  - Mettre en relation des élèves effectuant un trajet similaire.
@@ -49,7 +56,7 @@ Contraintes :
 
 
 
-4. Description technique
+4. DESCRIPTION DE L'APPLICATION
 L’application est développée en utilisant des technologies web 
 modernes pour assurer une expérience utilisateur fluide et réactive.
 Elle permet aux utilisateurs de s’inscrire, de publier des trajets, 
@@ -76,7 +83,7 @@ Notifications et messagerie interne pour organiser le trajet.
 
 
 
-5. Répartition des tâches
+5. REPARTITION DES TÂCHES
 Membre	Rôle principal
 [Nom 1]	Maquette et design de l’interface
 [Nom 2]	Développement frontend
@@ -87,7 +94,7 @@ Membre	Rôle principal
 
 
 
-6. Résultats obtenus
+6. RÉSULTATS OBTENUS
 Application fonctionnelle et testée avec un échantillon d’utilisateurs.
 
 - Interface claire et responsive.
@@ -99,7 +106,7 @@ Application fonctionnelle et testée avec un échantillon d’utilisateurs.
 
 
 
-7. Problèmes rencontrés et solutions
+7. PROBLEmes rencontrés
 Nous avons été confrontés à plusieurs défis, tels que :
 
 Manque de cohésion initial : surmonté grâce à des échanges fréquents, des discussions bienveillantes et un suivi rigoureux.
@@ -110,7 +117,7 @@ Gestion du temps : une planification hebdomadaire a permis de respecter le calen
 
 
 
-8. Perspectives d’amélioration
+8. PERSPECTIVES D'AMÉLIORATION
 Pour perfectionner l’application, nous envisageons :
 
 La création d’une version mobile.
@@ -122,7 +129,7 @@ Une fonctionnalité de suivi en temps réel pour plus de sécurité.
 
 
 
-9. Conclusion
+9. CONCLUSION
 Ce projet a été pour nous une opportunité de développer des compétences techniques et 
 humaines. Il nous a appris à travailler en équipe avec des personnes que nous ne connaissions pas, 
 à gérer des conflits mineurs et à coordonner nos efforts pour atteindre un objectif commun. Nous en 
