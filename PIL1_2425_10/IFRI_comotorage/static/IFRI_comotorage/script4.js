@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
             clearTimeout(hideSidebarTimeout);
             sidebar.style.left = '0';
             toggleBtn.innerHTML = '<i class="fas fa-angle-left"></i>';
-            toggleBtn.style.left = '100px';
+            toggleBtn.style.left = '120px';
         };
 
         const hideSidebar = () => {
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 sidebar.style.left = '-120px';
                 toggleBtn.innerHTML = '<i class="fas fa-angle-right"></i>';
                 toggleBtn.style.left = '0';
-            }, 200);
+            }, 300);
         };
 
         toggleBtn.addEventListener('mouseenter', showSidebar);
@@ -25,6 +25,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         sidebar.addEventListener('mouseenter', showSidebar);
         sidebar.addEventListener('mouseleave', hideSidebar);
+
+        toggleBtn.addEventListener('click', () => {
+            if (sidebar.style.left === '0px') {
+                hideSidebar();
+            } else {
+                showSidebar();
+            }
+        });
     }
 
     // Gestion de l'affichage conditionnel des erreurs
