@@ -439,10 +439,22 @@ def profile_config(request):
         profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
 
         if user_form.is_valid() and profile_form.is_valid():
+            
             user_form.save()
+            
             profile_form.save()
             messages.success(request, 'Votre profil a été mis à jour avec succès!')
             return redirect('Profil')
+        else:
+            
+            if not user_form.is_valid():
+                for field, errors in user_form.errors.items():
+                    for error in errors:
+                        messages.error(request, f"Erreur {field}: {error}")
+            if not profile_form.is_valid():
+                for field, errors in profile_form.errors.items():
+                    for error in errors:
+                        messages.error(request, f"Erreur {field}: {error}")
     else:
         user_form = UserUpdateForm(instance=request.user)
         profile_form = UserProfileForm(instance=profile)
@@ -454,6 +466,7 @@ def profile_config(request):
         'profile': profile
     }
     return render(request, 'IFRI_comotorage/profile_config.html', context)
+
 
 def save_location(request):
     if request.method == 'POST':
