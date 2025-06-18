@@ -1,11 +1,11 @@
 1. INTRODUCTION
 
 Dans le cadre de notre formation, nous avons conçu et développé une application web permettant
-aux élèves de notre établissement de pratiquer le covoiturage lorsqu’ils partagent le même 
-tronçon de trajet. L’objectif est de réduire les coûts de transport, désengorger le trafic et 
+aux élèves de notre établissement de pratiquer le covoiturage lorsqu'ils partagent le même 
+tronçon de trajet. L'objectif est de réduire les coûts de transport, désengorger le trafic et 
 promouvoir une mobilité plus écologique et solidaire. Cette application, nommée IFRI_comotorage, 
 est destinée aux étudiants de l'Institut de Formation et de Recherche en Informatique (IFRI) de 
-l'Université d’Abomey-Calavi. Elle facilite la mise en relation des conducteurs et passagers pour
+l'Université d'Abomey-Calavi. Elle facilite la mise en relation des conducteurs et passagers pour
 des trajets domicile-campus.
 
 
@@ -25,10 +25,10 @@ Notre groupe est composé de six membres :
 
 -SI1 : KOUSSEMON Godwill Aurel Sèdjro
 
-Au départ, aucun de nous ne se connaissait personnellement. La cohésion du groupe s’est donc construite progressivement grâce à une communication ouverte, des réunions régulières et une répartition claire des rôles selon les compétences
-et les disponibilités de chacun. L’utilisation d’outils collaboratifs en ligne nous a permis de partager nos idées 
-et d’avancer efficacement, malgré nos différences de personnalités et d’emplois du temps. Cette expérience nous a 
-appris l’importance de l’écoute, de la confiance et du respect mutuel pour garantir la réussite collective.
+Au départ, aucun de nous ne se connaissait personnellement. La cohésion du groupe s'est donc construite progressivement grâce à une communication ouverte, des réunions régulières et une répartition claire des rôles selon les compétences
+et les disponibilités de chacun. L'utilisation d'outils collaboratifs en ligne nous a permis de partager nos idées 
+et d'avancer efficacement, malgré nos différences de personnalités et d'emplois du temps. Cette expérience nous a 
+appris l'importance de l'écoute, de la confiance et du respect mutuel pour garantir la réussite collective.
 
 
 
@@ -50,30 +50,30 @@ Contraintes :
 
  - Temps de réponse rapide.
 
- - Simplicité d’utilisation pour tous les profils d’élèves.
+ - Simplicité d'utilisation pour tous les profils d'élèves.
 
 
 
 
 
 4. DESCRIPTION DE L'APPLICATION
-L’application est développée en utilisant des technologies web 
+L'application est développée en utilisant des technologies web 
 modernes pour assurer une expérience utilisateur fluide et réactive.
-Elle permet aux utilisateurs de s’inscrire, de publier des trajets, 
+Elle permet aux utilisateurs de s'inscrire, de publier des trajets, 
 de rechercher des offres et de communiquer entre eux via une messagerie intégrée.
 Technologies utilisées :
 
-Frontend : HTML, CSS, JavaScript ([préciser le framework si utilisé])
+Frontend : HTML, CSS, JavaScript 
 
-Backend : [ex. PHP, Python avec Flask ou Django]
+Backend :  PHP, Python avec  Django
 
-Base de données : [ex. MySQL, SQLite]
+Base de données :  MySQL
 
-Outils de gestion de projet : [ex. Trello, GitHub]
+Outils de gestion de projet :  GitHub
 
 Principales fonctionnalités :
 
-Création d’un compte utilisateur sécurisé.
+Création d'un compte utilisateur sécurisé.
 
 Publication et recherche de trajets.
 
@@ -84,24 +84,28 @@ Notifications et messagerie interne pour organiser le trajet.
 
 
 5. REPARTITION DES TÂCHES
-Membre	Rôle principal
-[Nom 1]	Maquette et design de l’interface
-[Nom 2]	Développement frontend
-[Nom 3]	Développement backend
-[Nom 4]	Modélisation et gestion de la base de données
-[Nom 5]	Scénarios de tests, débogage et assurance qualité
-[Nom 6]	Documentation, rédaction du rapport et préparation de la soutenance
+
+[HOUANNOU Marcos Primaël]	        Design de l'interface et développement frontend
+
+[KOUSSEMON Godwill Aurel Sèdjro]	Développement backend et gestion de la base de donnée 
+
+
+[KUISSOPA-MANTE Vernon Dabawi et 
+BIDIBI Emeline-Nellie]	             Débogage et assurance qualité
+
+
+[ADJAGBA Océane Adégnika]	         Documentation, Tests et rédaction du rapport 
 
 
 
 6. RÉSULTATS OBTENUS
-Application fonctionnelle et testée avec un échantillon d’utilisateurs.
+Application fonctionnelle et testée avec un échantillon d'utilisateurs.
 
 - Interface claire et responsive.
 
 - Données utilisateurs protégées.
 
-- Retour d’expérience positif des testeurs.
+- Retour d'expérience positif des testeurs.
 
 
 
