@@ -1,25 +1,43 @@
-/media/
-echo "__pycache__/" >> .gitignore
-echo "*.pyc" >> .gitignore
+cat << EOF > .gitignore
+# Fichiers et répertoires générés par Python
 __pycache__/
+*.pyc
+
+# Variables d'environnement
 .env
+
+# Environnements virtuels
 .vert/
 venv/
 env/
 .venv/
+
+# Clés et certificats (sensible)
 *.pem
 *.key
 *.crt
 *.csr
+
+# Fichiers de log
 *.log
 log/
 logs/
+
+# Bases de données
 *.db
 *.sqlite3
 *.mysql
+
+# Fichiers de médias uploadés
+/media/
+
+# Fichiers spécifiques au système d'exploitation
 Thumbs.db
 Desktop.ini
+
+# Fichiers de configuration IDE
 .vscode/
 *.sublime-project
 *.sublime-workspace
 .idea/
+EOF

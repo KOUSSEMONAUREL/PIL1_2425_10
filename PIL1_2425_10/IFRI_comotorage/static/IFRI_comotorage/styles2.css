@@ -139,7 +139,7 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    height: 100vh; 
+    height: 200vh; 
     width: 90vw;
     position: relative;
 }
@@ -276,4 +276,96 @@ body {
     width: 30vw;
     height: 6vh;
     border: 1px solid black;
+}
+
+#Psec31 {
+    background-color: #f8faff;
+    margin-top: 20px;
+    padding: 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    font-family: 'Arial', sans-serif;
+    margin-bottom: 20px;
+}
+
+#Psec31 h2 {
+    color: #0056b3;
+    font-size: 1.8em;
+    margin: 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0e6f0;
+    width: 100%;
+}
+
+#Psec31 p {
+    color: #333;
+    margin: 5px 0;
+    line-height: 1.4;
+}
+
+#Psec31 > div {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    width: 100%;
+    gap: 20px;
+    border: none;
+}
+
+#Psec31 > div > div {
+    width: 100%; 
+    max-width: 300px; 
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#Psec31 > div > div:hover {
+    transform: translateY(-5px);
+}
+
+#Psec31 > div > div p:first-child {
+    color: #667;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    font-weight: 500;
+    text-transform: uppercase;
+    text-align: center;
+    width: 100%;
+}
+
+#Psec31 > div > div p:last-child {
+    color: #007bff;
+    font-size: 1.4em;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+}
+
+#Psec31 .fas.fa-star {
+    color: #ffc107;
+    margin-right: 5px;
+}
+
+@media (min-width: 768px) {
+  #Psec31 > div {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  #Psec31 > div > div {
+    margin-bottom: 40px;
+  }
 }
