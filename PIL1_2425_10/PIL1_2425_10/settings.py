@@ -140,12 +140,14 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
-
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'IFRI_comotorage', 'static'),
-]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+DATABASES={
+    'default':{
+        'ENGINE':
+        'django.db.backends.sqlite3', 'NAME':BASE_DIR/ 'db.sqlite3',
+
+    }
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
