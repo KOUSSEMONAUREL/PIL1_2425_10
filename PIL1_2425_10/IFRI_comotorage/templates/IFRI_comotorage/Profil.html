@@ -72,7 +72,7 @@
         <section class="sec31">
             <h2>Adresse de départ habituelle</h2>
             <div>
-                <input type="text" 
+                <input style="background-color: inherit" type="text" 
                        value="{% if profile.adresse_depart %}{{ profile.adresse_depart }}{% else %}Non renseignée{% endif %}" 
                        readonly  disabled>
             </div>
@@ -82,13 +82,13 @@
             <h2>Horaires habituels</h2>
             <div>
                 <div>
-                    <label>Début:</label>
+                    <label>Début</label> 
                     <input type="time" 
                            value="{% if profile.horaire_debut %}{{ profile.horaire_debut|time:'H:i' }}{% endif %}" 
                            readonly disabled>
                 </div>
                 <div>
-                    <label>Fin:</label>
+                    <label>Fin</label>
                     <input type="time" 
                            value="{% if profile.horaire_fin %}{{ profile.horaire_fin|time:'H:i' }}{% endif %}" 
                            readonly  disabled>
@@ -99,7 +99,7 @@
         <section class="sec31">
             <h2>Nombre de places</h2>
             <div>
-                <input type="number" 
+                <input style="background-color: inherit" type="number" 
                        value="{{ profile.nombre_places }}" 
                        readonly  disabled>
             </div>
