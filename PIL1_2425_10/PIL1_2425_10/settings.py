@@ -41,8 +41,53 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'IFRI_comotorage',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     'channels',
 ]
+
+# monprojet/settings.py
+
+SITE_ID = 1 # Important pour allauth
+
+AUTHENTICATION_BACKENDS = [
+    
+    'django.contrib.auth.backends.ModelBackend',
+
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+ACCOUNT_EMAIL_REQUIRED = True 
+ACCOUNT_USERNAME_REQUIRED = False 
+
+ACCOUNT_LOGIN_METHODS = ['email'] 
+ACCOUNT_SIGNUP_FIELDS = ['email'] 
+ACCOUNT_UNIQUE_EMAIL = True 
+
+
+ACCOUNT_EMAIL_VERIFICATION = 'none' 
+LOGIN_REDIRECT_URL = '/Accueil/' 
+ACCOUNT_LOGOUT_REDIRECT_URL = '/Login/' 
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': '435335301769-e45lpfnmtqsi53u7q6kmvff6l59hk568.apps.googleusercontent.com',
+            'secret': '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',       
+            'key': '' 
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
 
 ASGI_APPLICATION = 'PIL1_2425_10.asgi.application'
 
@@ -54,6 +99,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'PIL1_2425_10.urls'
@@ -140,14 +186,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
-STATIC_URL = '/static/'
-DATABASES={
-    'default':{
-        'ENGINE':
-        'django.db.backends.sqlite3', 'NAME':BASE_DIR/ 'db.sqlite3',
 
-    }
-}
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'IFRI_comotorage', 'static'),
+]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

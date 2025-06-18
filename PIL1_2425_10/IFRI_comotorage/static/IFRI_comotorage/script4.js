@@ -1,6 +1,32 @@
-// Amélioration de l'UX pour le formulaire de connexion/inscription
-
 document.addEventListener('DOMContentLoaded', function() {
+
+    const toggleBtn = document.getElementById('span');
+    const sidebar = document.getElementById('footer');
+    let hideSidebarTimeout;
+
+    if (window.matchMedia("(min-width: 500px)").matches) {
+        const showSidebar = () => {
+            clearTimeout(hideSidebarTimeout);
+            sidebar.style.left = '0';
+            toggleBtn.innerHTML = '<i class="fas fa-angle-left"></i>';
+            toggleBtn.style.left = '100px';
+        };
+
+        const hideSidebar = () => {
+            hideSidebarTimeout = setTimeout(() => {
+                sidebar.style.left = '-120px';
+                toggleBtn.innerHTML = '<i class="fas fa-angle-right"></i>';
+                toggleBtn.style.left = '0';
+            }, 200);
+        };
+
+        toggleBtn.addEventListener('mouseenter', showSidebar);
+        toggleBtn.addEventListener('mouseleave', hideSidebar);
+
+        sidebar.addEventListener('mouseenter', showSidebar);
+        sidebar.addEventListener('mouseleave', hideSidebar);
+    }
+
     // Gestion de l'affichage conditionnel des erreurs
     function showErrorsOnlyWhenNeeded() {
         const inputs = document.querySelectorAll('.input');
