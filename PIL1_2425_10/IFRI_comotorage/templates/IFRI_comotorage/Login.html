@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load socialaccount %} {# Chargez les balises allauth socialaccount #}
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -12,6 +13,59 @@
       href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css"
       rel="stylesheet"
     />
+    <style>
+      /* Styles spécifiques pour les boutons sociaux */
+      .social-login-group {
+          margin-top: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          width: 350px; /* Align with other form elements */
+      }
+      .social-login-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 12px 20px;
+          border-radius: 10px;
+          border: 1px solid var(--input-color);
+          background-color: var(--card-bg);
+          color: var(--primary-text-color);
+          font-size: 16px;
+          cursor: pointer;
+          transition: background-color 0.3s ease, border-color 0.3s ease;
+          text-decoration: none; /* Pour le lien */
+      }
+      .social-login-btn:hover {
+          background-color: var(--button-color-hover);
+          border-color: var(--secondary-text-color);
+      }
+      .social-login-btn img {
+          width: 24px;
+          height: 24px;
+          margin-right: 10px;
+      }
+      .or-divider {
+          display: flex;
+          align-items: center;
+          text-align: center;
+          margin: 20px 0;
+          color: var(--secondary-text-color);
+          width: 350px;
+      }
+      .or-divider::before,
+      .or-divider::after {
+          content: '';
+          flex: 1;
+          border-bottom: 1px solid var(--input-color);
+      }
+      .or-divider:not(:empty)::before {
+          margin-right: .25em;
+      }
+      .or-divider:not(:empty)::after {
+          margin-left: .25em;
+      }
+    </style>
   </head>
 
   <body>
@@ -73,6 +127,18 @@
             </div>
             <button type="submit" id="login_submit" class="btn">LOGIN</button>
           </form>
+
+          {# Section pour la connexion sociale #}
+          <div class="or-divider">Ou</div>
+          <div class="social-login-group">
+              <a href="{% provider_login_url 'google' %}" class="social-login-btn">
+                  <img src="https://www.google.com/favicon.ico" alt="Google icon">
+                  Continuer avec Google
+              </a>
+              {# Vous pouvez ajouter d'autres fournisseurs ici, par exemple Facebook, GitHub, etc. #}
+              {# <a href="{% provider_login_url 'facebook' %}" class="social-login-btn">Continuer avec Facebook</a> #}
+          </div>
+
         </div>
         <div class="under-card">
           <p>Don't have an account?</p>
@@ -141,6 +207,16 @@
             </div>
             <button type="submit" id="signup_submit" class="btn">SIGN UP</button>
           </form>
+
+          {# Section pour l'inscription sociale #}
+          <div class="or-divider">Ou</div>
+          <div class="social-login-group">
+              <a href="{% provider_login_url 'google' %}" class="social-login-btn">
+                  <img src="https://www.google.com/favicon.ico" alt="Google icon">
+                  S'inscrire avec Google
+              </a>
+          </div>
+
         </div>
         <div class="under-card">
           <p>Already have an account?</p>
