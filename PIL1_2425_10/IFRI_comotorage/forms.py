@@ -11,28 +11,28 @@ class RegisterForm(forms.ModelForm):
         required=True, 
         widget=forms.TextInput(attrs={
             'class': 'input', 
-            'placeholder': 'Nom d\'utilisateur'
+            'placeholder': ''
         })
     )
     email = forms.EmailField(
         required=True, 
         widget=forms.EmailInput(attrs={
             'class': 'input', 
-            'placeholder': 'Email'
+            'placeholder': ''
         })
     )
     password1 = forms.CharField(
         label='Mot de passe',
         widget=forms.PasswordInput(attrs={
             'class': 'input', 
-            'placeholder': 'Mot de passe'
+            'placeholder': ''
         })
     )
     password2 = forms.CharField(
         label='Confirmer le mot de passe', 
         widget=forms.PasswordInput(attrs={
             'class': 'input', 
-            'placeholder': 'Confirmer le mot de passe'
+            'placeholder': ''
         })
     )
 
@@ -72,13 +72,13 @@ class LoginForm(forms.Form):
         required=True, 
         widget=forms.TextInput(attrs={
             'class': 'input', 
-            'placeholder': 'Nom d\'utilisateur ou Email'
+            'placeholder': ''
         })
     )
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'input', 
-            'placeholder': 'Mot de passe'
+            'placeholder': ''
         })
     )
 class UserProfileForm(forms.ModelForm):
